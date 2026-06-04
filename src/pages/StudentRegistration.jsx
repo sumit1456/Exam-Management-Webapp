@@ -1,0 +1,444 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { UserPlus, Eye, EyeOff, CheckCircle } from "lucide-react";
+import toast from "react-hot-toast";
+import { createStudent, getSchools } from "../api";
+import { useEffect } from "react";
+
+const StudentRegistration = () => {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [schools, setSchools] = useState([]);
+
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const fetchSchools = async () => {
+      try {
+        const data = await getSchools({ size: 1000 });
+        setSchools(data?.content || []);
+      } catch (err) {
+        console.error("Failed to fetch schools", err);
+      }
+    };
+    fetchSchools();
+  }, []);
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    contact: "",
+    email: "",
+    age: "",
+    motherTongue: "",
+    password: "",
+    confirmPassword: "",
+    schoolId: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    // Clear error when user types
+    if (errors[e.target.name]) {
+      setErrors({
+        ...errors,
+        [e.target.name]: "",
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Basic required fields
+    if (!formData.firstName.trim()) newErrors.firstName = "First Name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last Name is required";
+    
+    // Contact: exactly 10 digits
+    if (!/^\d{10}$/.test(formData.contact)) {
+      newErrors.contact = "Contact number must be exactly 10 digits";
+    }
+    
+    // Email regex
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    
+    // Age
+    const ageNum = parseInt(formData.age, 10);
+    if (!ageNum || ageNum < 5 || ageNum > 100) {
+      newErrors.age = "Age must be between 5 and 100";
+    }
+
+    if (!formData.motherTongue) newErrors.motherTongue = "Please select mother tongue";
+    if (!formData.schoolId) newErrors.schoolId = "Please select a school";
+
+    // Passwords
+    if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!validateForm()) {
+      toast.error("Please fix the errors in the form");
+      return;
+    }
+
+    try {
+      // Prepare data for backend (exclude confirmPassword and schoolId from main object)
+      const { confirmPassword, schoolId, ...studentData } = formData;
+
+      if (!schoolId) {
+        toast.error("Please select a school!");
+        return;
+      }
+
+      // Call backend API
+      const response = await createStudent(studentData, schoolId);
+
+      toast.success("Registration Successful! Redirecting to login...");
+      console.log("Registered Student:", response);
+
+      // Reset form
+      setFormData({
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        contact: "",
+        email: "",
+        age: "",
+        motherTongue: "",
+        password: "",
+        confirmPassword: "",
+        schoolId: "",
+      });
+
+      // Redirect to student dashboard after 2 seconds
+      setTimeout(() => {
+        if (navigate) navigate("/student");
+      }, 2000);
+    } catch (error) {
+      console.error("Registration Error:", error);
+      toast.error(
+        error.response?.data?.message ||
+        "Registration failed! Please try again.",
+      );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f8f9fe] py-12 px-4 md:px-8 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-500/5 blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-5%] left-[10%] w-[30%] h-[30%] rounded-full bg-indigo-500/5 blur-[90px] pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl shadow-xl overflow-hidden"
+        >
+          {/* Header */}
+          <div className="bg-[#4c84ff] p-10 text-white relative">
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+              <UserPlus size={120} />
+            </div>
+            <div className="flex items-center gap-6 relative z-10">
+              <div className="h-20 w-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md shadow-inner border border-white/20">
+                <UserPlus size={36} />
+              </div>
+              <div>
+                <h1 className="text-3xl font-black tracking-tight uppercase">Student Registration</h1>
+                <p className="text-blue-50 text-sm mt-1 font-medium opacity-90">
+                  Create your account to get started with the MRB Portal
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="p-8" noValidate>
+            <div className="space-y-6">
+              {/* Name Fields */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-2">
+                    First Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                    placeholder="Enter first name"
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition ${errors.firstName ? 'border-red-500' : 'border-gray-300'}`}
+                    value={formData.firstName}
+                    onChange={handleChange}
+                  />
+                   {errors.firstName && <p data-testid="error-firstName" className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
+                </div>
+                <div>
+                  <label htmlFor="middleName" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Middle Name
+                  </label>
+                  <input
+                    type="text"
+                    id="middleName"
+                    name="middleName"
+                    placeholder="Enter middle name"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition"
+                    value={formData.middleName}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Last Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    placeholder="Enter last name"
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition ${errors.lastName ? 'border-red-500' : 'border-gray-300'}`}
+                    value={formData.lastName}
+                    onChange={handleChange}
+                  />
+                   {errors.lastName && <p data-testid="error-lastName" className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
+                </div>
+              </div>
+
+              {/* Contact & Email */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="contact" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Contact Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="contact"
+                    name="contact"
+                    required
+                    placeholder="Enter contact number"
+                    pattern="[0-9]{10}"
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition ${errors.contact ? 'border-red-500' : 'border-gray-300'}`}
+                    value={formData.contact}
+                    onChange={handleChange}
+                  />
+                   {errors.contact ? (
+                    <p data-testid="error-contact" className="text-red-500 text-xs mt-1">{errors.contact}</p>
+                  ) : (
+                    <p className="text-xs text-gray-500 mt-1">10 digit number</p>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email ID <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="Enter email address"
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                   {errors.email && <p data-testid="error-email" className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                </div>
+              </div>
+
+              {/* Age & Mother Tongue */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="age" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Age <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="age"
+                    name="age"
+                    required
+                    min="5"
+                    max="100"
+                    placeholder="Enter age"
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition ${errors.age ? 'border-red-500' : 'border-gray-300'}`}
+                    value={formData.age}
+                    onChange={handleChange}
+                  />
+                   {errors.age && <p data-testid="error-age" className="text-red-500 text-xs mt-1">{errors.age}</p>}
+                </div>
+                <div>
+                  <label htmlFor="motherTongue" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Mother Tongue <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="motherTongue"
+                    name="motherTongue"
+                    required
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition bg-white ${errors.motherTongue ? 'border-red-500' : 'border-gray-300'}`}
+                    value={formData.motherTongue}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select mother tongue</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Marathi">Marathi</option>
+                  </select>
+                   {errors.motherTongue && <p data-testid="error-motherTongue" className="text-red-500 text-xs mt-1">{errors.motherTongue}</p>}
+                </div>
+              </div>
+
+              {/* School Selection */}
+              <div>
+                <label htmlFor="schoolId" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Select Registered School <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="schoolId"
+                  name="schoolId"
+                  required
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition bg-white font-medium ${errors.schoolId ? 'border-red-500' : 'border-gray-300'}`}
+                  value={formData.schoolId}
+                  onChange={handleChange}
+                >
+                  <option value="">Choose your school</option>
+                  {schools.map((s) => (
+                    <option key={s.schoolId} value={s.schoolId}>
+                      {s.schoolName}
+                    </option>
+                  ))}
+                </select>
+                 {errors.schoolId ? (
+                  <p data-testid="error-schoolId" className="text-red-500 text-xs mt-1">{errors.schoolId}</p>
+                ) : (
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1 ml-1">
+                    Registration is tied to your specific school
+                  </p>
+                )}
+              </div>
+
+              {/* Password Fields */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      required
+                      minLength="6"
+                      placeholder="Enter password"
+                      className={`w-full p-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                   {errors.password ? (
+                    <p data-testid="error-password" className="text-red-500 text-xs mt-1">{errors.password}</p>
+                  ) : (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Minimum 6 characters
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Confirm Password <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      required
+                      minLength="6"
+                      placeholder="Re-enter password"
+                      className={`w-full p-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#4c84ff] focus:border-transparent outline-none transition ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={20} />
+                      ) : (
+                        <Eye size={20} />
+                      )}
+                    </button>
+                  </div>
+                   {errors.confirmPassword && (
+                    <p data-testid="error-confirmPassword" className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <motion.button
+                whileHover={{ scale: 1.01, translateY: -2 }}
+                whileTap={{ scale: 0.99 }}
+                type="submit"
+                className="w-full bg-[#4c84ff] text-white font-black py-5 rounded-xl hover:shadow-[0_10px_25px_-5px_rgba(76,132,255,0.4)] transition-all duration-300 flex items-center justify-center gap-3 mt-10 uppercase tracking-wider shadow-lg shadow-blue-500/20"
+              >
+                <CheckCircle size={22} />
+                Create Account
+              </motion.button>
+            </div>
+          </form>
+        </motion.div>
+
+        {/* Info Card */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mt-6 bg-indigo-50 border border-indigo-200 rounded-xl p-6"
+        >
+          <h3 className="font-semibold text-indigo-900 mb-2">
+            Registration Guidelines
+          </h3>
+          <ul className="text-sm text-indigo-700 space-y-1">
+            <li>• All fields marked with * are mandatory</li>
+            <li>• Contact number must be 10 digits</li>
+            <li>• Password must be at least 6 characters long</li>
+            <li>• Make sure both passwords match</li>
+          </ul>
+        </motion.div>
+      </div>
+    </div >
+  );
+};
+
+export default StudentRegistration;
