@@ -9,6 +9,7 @@ const Marksheet = ({ result, onClose }) => {
   const app = result.application || {}
   const exam = app.exam || {}
   const student = app.student || {}
+  const profile = student.profile || null
 
   let resultData = {}
   try {

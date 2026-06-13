@@ -52,8 +52,8 @@ const StudentDashboard = () => {
   const [centres, setCentres] = useState([]);
   const [schools, setSchools] = useState([]);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+  const [loginEmail, setLoginEmail] = useState("demo@gmail.com");
+  const [loginPassword, setLoginPassword] = useState("student123");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isLoadingApplications, setIsLoadingApplications] = useState(false);

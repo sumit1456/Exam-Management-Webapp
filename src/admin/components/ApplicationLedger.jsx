@@ -93,7 +93,7 @@ const ApplicationLedger = ({ applications, filters, onClose }) => {
                                                 <td className="border border-black p-2 text-center font-medium">SID: {app.studentId}</td>
                                                 <td className="border border-black p-2 font-black text-sm uppercase">{app.studentName}</td>
                                                 <td className="border border-black p-2 text-center font-black uppercase tracking-tighter">
-                                                    {app.status}
+                                                    {app.status?.replace(/_/g, ' ')}
                                                 </td>
                                             </tr>
                                         ))}
@@ -104,12 +104,12 @@ const ApplicationLedger = ({ applications, filters, onClose }) => {
                                 <div className="mt-6 flex gap-8 items-center justify-end">
                                     <div className="text-[11px] font-black uppercase text-gray-400">Application Breakup:</div>
                                     <div className="flex gap-4">
-                                        {['SUBMITTED', 'APPROVED', 'REJECTED'].map(status => {
+                                        {['SUBMITTED', 'APPROVED', 'REJECTED', 'RESULT_PUBLISHED'].map(status => {
                                             const count = examApps.filter(a => a.status === status).length;
                                             if (count === 0) return null;
                                             return (
                                                 <div key={status} className="flex items-center gap-1.5 px-3 py-1 rounded bg-gray-50 border border-gray-100">
-                                                    <span className="text-[10px] font-black text-gray-500">{status}:</span>
+                                                    <span className="text-[10px] font-black text-gray-500">{status.replace(/_/g, ' ')}:</span>
                                                     <span className="text-xs font-black text-gray-900">{count}</span>
                                                 </div>
                                             );

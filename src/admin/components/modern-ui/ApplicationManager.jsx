@@ -88,6 +88,7 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
             case 'REJECTED': return { bg: '#FFF5F5', color: '#FA5252', border: '#FFE3E3' };
             case 'PENDING': return { bg: '#FFF9DB', color: '#F59F00', border: '#FFF3BF' };
             case 'SUBMITTED': return { bg: '#E7F2FF', color: '#228BE6', border: '#D0EBFF' };
+            case 'RESULT_PUBLISHED': return { bg: '#F3F0FF', color: '#7048E8', border: '#D0BFFF' };
             default: return { bg: '#F8F9FA', color: '#868E96', border: '#E9ECEF' };
         }
     };
@@ -213,6 +214,7 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
                             <option value="APPROVED">APPROVED</option>
                             <option value="REJECTED">REJECTED</option>
                             <option value="PENDING">PENDING</option>
+                            <option value="RESULT_PUBLISHED">RESULT PUBLISHED</option>
                         </select>
                     </div>
                 </div>

@@ -522,7 +522,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, CheckCircle, XCircle, FileText, Printer } from 'lucide-react';
+import { ChevronLeft, CheckCircle, XCircle, FileText, Printer, Award } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getStudentProfileByStudentIdString, updateExamApplication, getExamApplicationByExactId, getStudents, getSchools } from '../../api';
 import { getExam as getExamByNo } from '../../api/exam-api';
@@ -532,6 +532,7 @@ const STATUS_STYLES = {
     APPROVED: { bg: '#EBFBEE', color: '#2F9E44' },
     REJECTED: { bg: '#FFF5F5', color: '#F03E3E' },
     PENDING: { bg: '#EEF3FF', color: '#4361EE' },
+    RESULT_PUBLISHED: { bg: '#F3F0FF', color: '#7048E8' },
 };
 
 const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
@@ -608,6 +609,11 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
         if (!rejectionReason.trim()) return toast.error('Please provide a rejection reason');
         updateStatusMutation.mutate({ id: application.applicationId, status: 'REJECTED', remarks: rejectionReason });
     };
+    const handlePublishResult = () => {
+        if (window.confirm('Mark this application as result published?')) {
+            updateStatusMutation.mutate({ id: application.applicationId, status: 'RESULT_PUBLISHED', remarks: 'Marked as result published by admin' });
+        }
+    };
 
     if (!application) return null;
 
@@ -627,7 +633,7 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                         <Printer size={13} /> Print Official Form
                     </button>
                     <span style={{ ...s.statusPill, background: st.bg, color: st.color }}>
-                        {application.status}
+                        {application.status?.replace(/_/g, ' ')}
                     </span>
                 </div>
             </div>
@@ -794,6 +800,13 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                                     style={{ ...s.actionBtn, background: '#fff', color: '#F03E3E', border: '0.5px solid #FFC9C9' }}
                                 >
                                     <XCircle size={15} /> Reject
+                                </button>
+                                <button
+                                    onClick={handlePublishResult}
+                                    disabled={updateStatusMutation.isPending || application.status === 'RESULT_PUBLISHED'}
+                                    style={{ ...s.actionBtn, background: '#fff', color: '#7048E8', border: '0.5px solid #D0BFFF' }}
+                                >
+                                    <Award size={15} /> Mark as Result Published
                                 </button>
                             </>
                         ) : (

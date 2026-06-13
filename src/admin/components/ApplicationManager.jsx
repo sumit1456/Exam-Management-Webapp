@@ -109,8 +109,14 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
             case 'REJECTED': return 'bg-red-50 text-red-600 border-red-100';
             case 'PENDING': return 'bg-amber-50 text-amber-600 border-amber-100';
             case 'SUBMITTED': return 'bg-blue-50 text-blue-600 border-blue-100';
+            case 'RESULT_PUBLISHED': return 'bg-purple-50 text-purple-600 border-purple-100';
             default: return 'bg-gray-50 text-gray-500 border-gray-100';
         }
+    };
+
+    const formatStatus = (status) => {
+        if (!status) return '';
+        return status.replace(/_/g, ' ');
     };
 
     if (isLoading && !applicationsData) {
@@ -246,6 +252,7 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
                             <option value="REJECTED">REJECTED</option>
                             <option value="PENDING">PENDING</option>
                             <option value="APPLIED">APPLIED</option>
+                            <option value="RESULT_PUBLISHED">RESULT PUBLISHED</option>
                         </select>
                     </div>
 
@@ -281,8 +288,8 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
                                                             <td className="px-6 py-4 font-bold text-gray-600 text-xs">{app.examName}</td>
                                                             <td className="px-6 py-4 text-center">
                                                                 <span className={`text-[10px] font-black px-3 py-1 rounded-full border shadow-sm uppercase tracking-tighter ${getStatusStyle(app.status)}`}>
-                                                                    {app.status}
-                                                                </span>
+                                                                     {formatStatus(app.status)}
+                                                                 </span>
                                                             </td>
                                                             <td className="px-6 py-4 text-right">
                                                                 <button className="p-2 bg-blue-50 text-[#4c84ff] rounded-lg opacity-0 group-hover:opacity-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2">
@@ -308,7 +315,7 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
                                                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">App: #{app.applicationId} • SID: {app.studentId}</p>
                                                 <p className="text-[10px] text-[#4c84ff] font-black uppercase tracking-widest mt-3 bg-blue-50 w-fit px-2 py-0.5 rounded truncate max-w-full">{app.examName}</p>
                                                 <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
-                                                    <span className={`text-[9px] font-black px-3 py-1 rounded-full border shadow-sm uppercase tracking-widest ${getStatusStyle(app.status)}`}>{app.status}</span>
+                                                    <span className={`text-[9px] font-black px-3 py-1 rounded-full border shadow-sm uppercase tracking-widest ${getStatusStyle(app.status)}`}>{formatStatus(app.status)}</span>
                                                     <ArrowRight size={16} className="text-gray-300 group-hover:text-[#4c84ff] transition-all transform group-hover:translate-x-1" />
                                                 </div>
                                             </motion.div>
@@ -349,7 +356,7 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
                                             <td className="px-6 py-4 font-bold text-gray-900">{app.studentName}</td>
                                             <td className="px-6 py-4 font-bold text-gray-600 text-[10px] uppercase truncate max-w-[150px]">{app.examName}</td>
                                             <td className="px-6 py-4 text-center">
-                                                <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-tighter ${getStatusStyle(app.status)}`}>{app.status}</span>
+                                                <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-tighter ${getStatusStyle(app.status)}`}>{formatStatus(app.status)}</span>
                                             </td>
                                             <td className="px-6 py-4 text-right"><ArrowRight size={14} className="ml-auto text-gray-300" /></td>
                                         </tr>

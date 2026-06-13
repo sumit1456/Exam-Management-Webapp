@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Printer, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
+import { X, Printer, CheckCircle, AlertCircle, ArrowRight, FileText, LayoutDashboard } from "lucide-react";
 import toast from "react-hot-toast";
 import { createExamApplication, getStudentProfileByStudentIdString } from "../../api";
 
@@ -11,6 +11,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
   const [loading, setLoading] = useState(true);
   const [medium, setMedium] = useState("Hindi");
   const [category, setCategory] = useState("General");
+  const [viewMode, setViewMode] = useState('paper');
 
   // Parse the papers JSON string from the exam entity
   const papers = useMemo(() => {

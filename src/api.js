@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://100.53.20.30:8080";
+const API_URL = "https://webapp-w7f4.onrender.com";
 
 const API_URL2 = "http://localhost:8080";
 
 const api = axios.create({
-  baseURL: API_URL2,
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
