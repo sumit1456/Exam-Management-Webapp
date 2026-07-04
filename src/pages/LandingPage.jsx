@@ -19,12 +19,7 @@ const LandingPage = () => {
   return (
     <div style={s.root}>
       {/* ── Left panel ── */}
-      <div style={s.left}>
-        {/* Decorative blobs */}
-        <div style={s.blob1} />
-        <div style={s.blob2} />
-        <div style={s.blob3} />
-
+      <div style={{ ...s.left, background: 'linear-gradient(145deg, #090d16 0%, #0d1629 50%, #15223e 100%)' }}>
         {/* Grid overlay */}
         <div style={s.grid} />
 
@@ -164,11 +159,11 @@ const LandingPage = () => {
               onClick={() => setShowStudentInfo(v => !v)}
               style={{
                 ...s.portalCard,
-                ...(hoveredCard === 'student' ? s.portalCardHoverStudent : {}),
-                ...(showStudentInfo ? s.portalCardActiveStudent : {}),
+                ...(hoveredCard === 'student' ? s.portalCardHover : {}),
+                ...(showStudentInfo ? s.portalCardActive : {}),
               }}
             >
-              <div style={{ ...s.portalIcon, background: 'linear-gradient(135deg,#6741d9,#9775fa)' }}>
+              <div style={{ ...s.portalIcon, background: 'linear-gradient(135deg,#3b5bdb,#4c84ff)' }}>
                 <GraduationCap size={28} color="#fff" />
               </div>
               <div style={s.portalText}>
@@ -192,24 +187,24 @@ const LandingPage = () => {
                   transition={{ duration: 0.22 }}
                   style={{ overflow: 'hidden' }}
                 >
-                  <div style={{ ...s.infoPanel, borderColor: '#e9d5ff', background: '#faf5ff' }}>
+                  <div style={s.infoPanel}>
                     <button
                       onClick={() => setShowStudentInfo(false)}
-                      style={{ ...s.infoClose, color: '#9333ea' }}
+                      style={s.infoClose}
                     >
                       <X size={13} />
                     </button>
                     <div style={s.infoRow}>
-                      <Info size={15} style={{ color: '#9333ea', flexShrink: 0, marginTop: 1 }} />
+                      <Info size={15} style={{ color: '#4361ee', flexShrink: 0, marginTop: 1 }} />
                       <div>
-                        <p style={{ ...s.infoTitle, color: '#581c87' }}>Login with your registered email and password</p>
+                        <p style={s.infoTitle}>Login with your registered email and password</p>
                       </div>
                     </div>
-                    <div style={{ ...s.credBox, borderColor: '#e9d5ff', background: '#fff' }}>
-                      <div style={s.credRow}><span style={{ ...s.credKey, color: '#9333ea' }}>Email</span><span style={s.credVal}>rahuljoshi123@gmail.com</span></div>
-                      <div style={s.credRow}><span style={{ ...s.credKey, color: '#9333ea' }}>Password</span><span style={s.credVal}>student123</span></div>
+                    <div style={s.credBox}>
+                      <div style={s.credRow}><span style={s.credKey}>Email</span><span style={s.credVal}>rahuljoshi123@gmail.com</span></div>
+                      <div style={s.credRow}><span style={s.credKey}>Password</span><span style={s.credVal}>student123</span></div>
                     </div>
-                    <Link to="/student" style={{ ...s.infoBtn, background: 'linear-gradient(135deg,#7c3aed,#9333ea)', boxShadow: '0 4px 14px rgba(147,51,234,0.35)' }}>
+                    <Link to="/student" style={s.infoBtn}>
                       Go to Student Portal <ChevronRight size={14} />
                     </Link>
                   </div>
@@ -250,24 +245,8 @@ const s = {
     justifyContent: 'center',
     padding: '56px 52px',
   },
-  blob1: {
-    position: 'absolute', top: '-15%', right: '-12%',
-    width: 360, height: 360, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(99,179,237,0.18) 0%, transparent 70%)',
-    pointerEvents: 'none',
-  },
-  blob2: {
-    position: 'absolute', bottom: '-10%', left: '-10%',
-    width: 300, height: 300, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(129,140,248,0.2) 0%, transparent 70%)',
-    pointerEvents: 'none',
-  },
-  blob3: {
-    position: 'absolute', top: '40%', left: '60%',
-    width: 160, height: 160, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)',
-    pointerEvents: 'none',
-  },
+
+
   grid: {
     position: 'absolute', inset: 0,
     backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
@@ -344,16 +323,7 @@ const s = {
     marginBottom: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0,
     borderBottom: 'none',
   },
-  portalCardHoverStudent: {
-    borderColor: '#d8b4fe',
-    boxShadow: '0 4px 20px rgba(147,51,234,0.1)',
-  },
-  portalCardActiveStudent: {
-    borderColor: '#9333ea',
-    boxShadow: '0 4px 20px rgba(147,51,234,0.12)',
-    marginBottom: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0,
-    borderBottom: 'none',
-  },
+
   portalIcon: {
     width: 52, height: 52, borderRadius: 12, flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',

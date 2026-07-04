@@ -643,14 +643,13 @@ const AdminDashboard = () => {
         {/* ── Left visual panel ── */}
         <div style={{
           flex: '0 0 44%', position: 'relative', overflow: 'hidden',
-          background: 'linear-gradient(145deg,#0c1445 0%,#162b6e 45%,#1a3a8f 100%)',
+          background: 'linear-gradient(145deg,#090d16 0%,#0d1629 45%,#15223e 100%)',
           display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '56px 48px',
         }}>
           {/* Grid */}
           <div style={{ position:'absolute',inset:0, backgroundImage:'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)', backgroundSize:'40px 40px', pointerEvents:'none' }} />
-          {/* Blobs */}
-          <div style={{ position:'absolute',top:'-15%',right:'-12%',width:360,height:360,borderRadius:'50%',background:'radial-gradient(circle,rgba(99,179,237,0.18) 0%,transparent 70%)',pointerEvents:'none' }} />
-          <div style={{ position:'absolute',bottom:'-10%',left:'-10%',width:280,height:280,borderRadius:'50%',background:'radial-gradient(circle,rgba(99,102,241,0.2) 0%,transparent 70%)',pointerEvents:'none' }} />
+
+
 
           <div style={{ position:'relative', zIndex:1 }}>
             {/* Logo */}
@@ -940,7 +939,8 @@ const ls = {
   },
   input: {
     width: '100%', padding: '11px 14px', fontSize: 13, fontWeight: 500,
-    color: '#0f172a', background: '#fff', border: '1.5px solid #e2e8f0',
+    color: '#0f172a', background: '#fff',
+    borderWidth: '1.5px', borderStyle: 'solid', borderColor: '#e2e8f0',
     borderRadius: 9, outline: 'none', boxSizing: 'border-box',
     transition: 'border-color 0.18s',
     fontFamily: "'DM Sans','Segoe UI',sans-serif",

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getCookie, removeCookie } from "./utils/cookie";
 
-const API_URL = "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -24,7 +24,7 @@ api.interceptors.response.use(
     const requestUrl = error.config?.url || "";
     const isLoginRequest = requestUrl.includes("/auth/login");
     const hasToken = !!getCookie("jwt_token");
-    
+
     // Only redirect on 401 if user HAS a token (session expired)
     // Don't redirect if no token (user is on login page, not authenticated yet)
     if (error.response?.status === 401 && !isLoginRequest && hasToken) {

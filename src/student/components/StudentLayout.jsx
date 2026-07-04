@@ -44,7 +44,7 @@ const s = {
         fontFamily: 'DM Sans, Segoe UI, sans-serif',
     },
     mainWrapper: {
-        paddingLeft: '260px',
+        paddingLeft: '256px',
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',

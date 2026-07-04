@@ -32,6 +32,7 @@ import {
   Download,
   FileCheck,
   ArrowLeft,
+  GraduationCap,
 } from "lucide-react";
 import MyResults from "../student/components/MyResults";
 import ApplyModal from "../student/components/ApplyModal";
@@ -222,28 +223,27 @@ const StudentDashboard = () => {
         {/* ── Left visual panel ── */}
         <div style={{
           flex:'0 0 44%', position:'relative', overflow:'hidden',
-          background:'linear-gradient(145deg,#1e1b4b 0%,#3730a3 45%,#4f46e5 100%)',
+          background: 'linear-gradient(145deg, #090d16 0%, #0d1629 45%, #15223e 100%)',
           display:'flex', flexDirection:'column', justifyContent:'center', padding:'56px 48px',
         }}>
           {/* Grid */}
           <div style={{ position:'absolute',inset:0,backgroundImage:'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',backgroundSize:'40px 40px',pointerEvents:'none' }} />
-          {/* Blobs */}
-          <div style={{ position:'absolute',top:'-15%',right:'-12%',width:360,height:360,borderRadius:'50%',background:'radial-gradient(circle,rgba(167,139,250,0.22) 0%,transparent 70%)',pointerEvents:'none' }} />
-          <div style={{ position:'absolute',bottom:'-10%',left:'-10%',width:280,height:280,borderRadius:'50%',background:'radial-gradient(circle,rgba(99,102,241,0.25) 0%,transparent 70%)',pointerEvents:'none' }} />
+
+
 
           <div style={{ position:'relative', zIndex:1 }}>
             {/* Logo */}
             <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:52 }}>
               <div style={{ width:40,height:40,borderRadius:10,background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.15)',display:'flex',alignItems:'center',justifyContent:'center' }}>
-                <GraduationCap size={20} color="#c4b5fd" />
+                <GraduationCap size={20} color="#93c5fd" />
               </div>
               <span style={{ fontSize:12,fontWeight:700,color:'rgba(255,255,255,0.65)',letterSpacing:'0.08em',textTransform:'uppercase' }}>MRB · Student Portal</span>
             </div>
 
-            <p style={{ fontSize:11,fontWeight:700,color:'#c4b5fd',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10 }}>Your Exam Journey Starts Here</p>
+            <p style={{ fontSize:11,fontWeight:700,color:'#93c5fd',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10 }}>Your Exam Journey Starts Here</p>
             <h1 style={{ fontSize:38,fontWeight:900,color:'#fff',lineHeight:1.15,margin:'0 0 16px',letterSpacing:'-0.02em' }}>
               Student<br />
-              <span style={{ color:'#a78bfa' }}>Examination</span><br />
+              <span style={{ color:'#60a5fa' }}>Examination</span><br />
               Portal
             </h1>
             <p style={{ fontSize:13,color:'rgba(255,255,255,0.5)',lineHeight:1.7,maxWidth:320,margin:'0 0 36px' }}>
@@ -258,7 +258,7 @@ const StudentDashboard = () => {
               'Download merit certificates',
             ].map(f => (
               <div key={f} style={{ display:'flex',alignItems:'center',gap:10,marginBottom:10 }}>
-                <div style={{ width:6,height:6,borderRadius:'50%',background:'#a78bfa',flexShrink:0 }} />
+                <div style={{ width:6,height:6,borderRadius:'50%',background:'#60a5fa',flexShrink:0 }} />
                 <span style={{ fontSize:12,color:'rgba(255,255,255,0.6)',fontWeight:500 }} dangerouslySetInnerHTML={{ __html: f }} />
               </div>
             ))}
@@ -356,7 +356,7 @@ const StudentDashboard = () => {
                 onClick={() => navigate("/student/register")}
                 style={{
                   width:'100%', padding:'12px 0', borderRadius:10, cursor:'pointer',
-                  background:'#fff', border:'1.5px solid #e0e7ff', color:'#4f46e5',
+                  background:'#fff', borderWidth: '1.5px', borderStyle: 'solid', borderColor: '#e0e7ff', color:'#4f46e5',
                   fontSize:13, fontWeight:700,
                   display:'flex', alignItems:'center', justifyContent:'center', gap:8,
                   transition:'border-color 0.18s, background 0.18s',
@@ -590,7 +590,8 @@ const sls = {
   },
   input: {
     width: '100%', padding: '11px 14px', fontSize: 13, fontWeight: 500,
-    color: '#0f172a', background: '#fff', border: '1.5px solid #e2e8f0',
+    color: '#0f172a', background: '#fff',
+    borderWidth: '1.5px', borderStyle: 'solid', borderColor: '#e2e8f0',
     borderRadius: 9, outline: 'none', boxSizing: 'border-box',
     transition: 'border-color 0.18s',
     fontFamily: "'DM Sans','Segoe UI',sans-serif",
