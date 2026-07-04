@@ -35,7 +35,7 @@ const LandingPage = () => {
             <div style={s.logoIcon}>
               <BookOpen size={22} color="#fff" />
             </div>
-            <span style={s.logoText}>MRB · Exam Portal</span>
+            <span style={s.logoText}>UEMS · Exam Portal</span>
           </motion.div>
 
           {/* Headline */}
