@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { Printer, Download, FileText, LayoutDashboard } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
+import FileImage from '../../common/components/FileImage';
 
 // Helper: extract URL from backend JSON map strings like {"filename":"url"}
 const parseUrl = (str) => {
@@ -73,7 +74,7 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
             {/* Header */}
             <div className="flex justify-between items-center p-8 border-b-2 border-slate-800">
                 <div className="w-24 h-24 border border-slate-800 p-1 flex items-center justify-center">
-                    {boardSealUrl ? <img src={boardSealUrl} alt="Seal" className="w-full h-full object-contain" /> : "SEAL"}
+                    {boardSealUrl ? <FileImage src={boardSealUrl} alt="Seal" className="w-full h-full object-contain" /> : "SEAL"}
                 </div>
                 <div className="text-center px-4">
                     <h1 className="text-2xl font-bold uppercase tracking-widest leading-tight">{identity.conductingBody || 'Maharashtra Rashtrabhasha Sabha, Pune'}</h1>
@@ -81,7 +82,7 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                     <h3 className="text-lg font-bold mt-2 underline italic">ADMIT CARD / HALL TICKET</h3>
                 </div>
                 <div className="w-24 h-24 border border-slate-800 flex items-center justify-center text-xs text-center p-1 font-sans text-slate-400">
-                    {profile?.profilePhotoUrl ? <img src={profile.profilePhotoUrl} alt="Student" className="w-full h-full object-cover" /> : "AFFIX PHOTO"}
+                    {profile?.profilePhotoUrl ? <FileImage src={profile.profilePhotoUrl} alt="Student" className="w-full h-full object-cover" /> : "AFFIX PHOTO"}
                 </div>
             </div>
 
@@ -193,17 +194,17 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                 {/* Signatures */}
                 <div className="grid grid-cols-3 gap-10 mt-16 text-center text-[14px] font-bold pt-12">
                     <div className="border-t border-slate-800 pt-3 relative">
-                        {profile?.signatureUrl && <img src={profile.signatureUrl} alt="Sign" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-14" />}
+                        {profile?.signatureUrl && <FileImage src={profile.signatureUrl} alt="Sign" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-14" />}
                         Signature of Candidate
                     </div>
                     <div className="border-t border-slate-800 pt-3 relative">
-                        {schoolStampUrl && <img src={schoolStampUrl} alt="Stamp" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-16 opacity-30" />}
-                        {principalSigUrl && <img src={principalSigUrl} alt="Sign" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-12" />}
+                        {schoolStampUrl && <FileImage src={schoolStampUrl} alt="Stamp" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-16 opacity-30" />}
+                        {principalSigUrl && <FileImage src={principalSigUrl} alt="Sign" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-12" />}
                         Principal Seal & Sign
                     </div>
                     <div className="border-t border-slate-800 pt-3 relative">
-                        {boardSealUrl && <img src={boardSealUrl} alt="Seal" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-16 opacity-30" />}
-                        {controllerSigUrl && <img src={controllerSigUrl} alt="Sign" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-12" />}
+                        {boardSealUrl && <FileImage src={boardSealUrl} alt="Seal" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-16 opacity-30" />}
+                        {controllerSigUrl && <FileImage src={controllerSigUrl} alt="Sign" className="absolute bottom-10 left-1/2 -translate-x-1/2 max-h-12" />}
                         {adminDetails.signatoryDesignation || 'Controller of Examinations'}
                     </div>
                 </div>
@@ -222,7 +223,7 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                     {/* Board Seal / Logo Left */}
                     <div style={{ width: '100px', height: '100px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {boardSealUrl ? (
-                            <img src={boardSealUrl} alt="Board Seal" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
+                            <FileImage src={boardSealUrl} alt="Board Seal" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
                         ) : (
                             <div style={{ width: '90px', height: '90px', borderRadius: '50%', border: '4px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: 'rgba(255,255,255,0.5)', fontSize: '10px', fontWeight: 800, textAlign: 'center', letterSpacing: '0.05em' }}>
                                 <span style={{ fontSize: '24px', fontWeight: 900 }}>MRB</span>
@@ -250,7 +251,7 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                     {/* Board Logo Right */}
                     <div style={{ width: '100px', height: '100px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {boardLogoUrl ? (
-                            <img src={boardLogoUrl} alt="Board Logo" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
+                            <FileImage src={boardLogoUrl} alt="Board Logo" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
                         ) : (
                             <div style={{ width: '90px', height: '90px', borderRadius: '8px', border: '3px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '10px', fontWeight: 800, textAlign: 'center', padding: '6px' }}>
                                 BOARD LOGO
@@ -331,7 +332,7 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', borderBottom: '1px solid #cbd5e0', background: '#fcfcfc', gap: '12px' }}>
                     <div className="ht-photo">
                         {profile?.profilePhotoUrl ? (
-                            <img src={profile.profilePhotoUrl} alt="Candidate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <FileImage src={profile.profilePhotoUrl} alt="Candidate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
                             <span style={{ fontWeight: 700, padding: '10px' }}>AFFIX RECENT<br />PASSPORT SIZE<br />PHOTOGRAPH</span>
                         )}
@@ -439,7 +440,7 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                 <div className="ht-sign-box">
                     <div className="ht-sign-img-area">
                         {profile?.signatureUrl ? (
-                            <img src={profile.signatureUrl} alt="Candidate Signature" style={{ maxHeight: '70px', maxWidth: '100%', objectFit: 'contain' }} />
+                            <FileImage src={profile.signatureUrl} alt="Candidate Signature" style={{ maxHeight: '70px', maxWidth: '100%', objectFit: 'contain' }} />
                         ) : (
                             <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', border: '1px dashed #cbd5e0', padding: '10px 20px' }}>SPECIMEN SIGNATURE</span>
                         )}
@@ -451,12 +452,12 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                 <div className="ht-sign-box">
                     <div className="ht-sign-img-area" style={{ flexDirection: 'column', gap: '6px' }}>
                         {principalSigUrl ? (
-                            <img src={principalSigUrl} alt="Principal Signature" style={{ maxHeight: '50px', maxWidth: '100%', objectFit: 'contain', zIndex: 10 }} />
+                            <FileImage src={principalSigUrl} alt="Principal Signature" style={{ maxHeight: '50px', maxWidth: '100%', objectFit: 'contain', zIndex: 10 }} />
                         ) : (
                             <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', zIndex: 10 }}>OFFICIAL SEAL</span>
                         )}
                         {schoolStampUrl && (
-                            <img src={schoolStampUrl} alt="School Stamp" style={{ maxHeight: '60px', maxWidth: '90%', objectFit: 'contain', opacity: 0.3, position: 'absolute' }} />
+                            <FileImage src={schoolStampUrl} alt="School Stamp" style={{ maxHeight: '60px', maxWidth: '90%', objectFit: 'contain', opacity: 0.3, position: 'absolute' }} />
                         )}
                     </div>
                     <div className="ht-sign-label z-10">Principal Attestation & Seal</div>
@@ -466,10 +467,10 @@ const HallTicket = ({ application, student, profile, exam, school, regions = [],
                 <div className="ht-sign-box">
                     <div className="ht-sign-img-area" style={{ flexDirection: 'column', gap: '6px' }}>
                         {boardSealUrl && (
-                            <img src={boardSealUrl} alt="Board Seal" style={{ maxHeight: '60px', maxWidth: '90%', objectFit: 'contain', opacity: 0.3, position: 'absolute' }} />
+                            <FileImage src={boardSealUrl} alt="Board Seal" style={{ maxHeight: '60px', maxWidth: '90%', objectFit: 'contain', opacity: 0.3, position: 'absolute' }} />
                         )}
                         {controllerSigUrl ? (
-                            <img src={controllerSigUrl} alt="Controller Signature" style={{ maxHeight: '50px', maxWidth: '100%', objectFit: 'contain', zIndex: 10 }} />
+                            <FileImage src={controllerSigUrl} alt="Controller Signature" style={{ maxHeight: '50px', maxWidth: '100%', objectFit: 'contain', zIndex: 10 }} />
                         ) : (
                             <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', zIndex: 10 }}>BOARD VERIFIED</span>
                         )}

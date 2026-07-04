@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Download, Award, Printer, X, LayoutDashboard, FileText } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import { motion, AnimatePresence } from 'framer-motion';
+import FileImage from '../../common/components/FileImage';
 
 const parseUrl = (str) => {
     if (!str) return null;
@@ -192,7 +193,7 @@ const Certificate = ({ result, onClose }) => {
                         background: '#fffbeb', color: '#c9a227', boxShadow: '0 0 0 4px #fef9c3', flexShrink: 0, margin: '0 auto'
                     }}>
                         {boardSealUrl ? (
-                            <img src={boardSealUrl} alt="Seal" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+                            <FileImage src={boardSealUrl} alt="Seal" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
                         ) : (
                             <><Award size={26} /><span style={{ fontSize: 8, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2, fontFamily: 'DM Sans, sans-serif' }}>Official</span></>
                         )}
@@ -201,7 +202,7 @@ const Certificate = ({ result, onClose }) => {
                     <div style={{ textAlign: 'center', position: 'relative' }}>
                         <div className="flex flex-col items-center justify-end" style={{ borderBottom: '1px solid #cbd5e0', paddingBottom: 6, marginBottom: 6, minHeight: '40px' }}>
                             {controllerSigUrl ? (
-                                <img src={controllerSigUrl} alt="Signature" style={{ maxHeight: '40px', objectFit: 'contain' }} />
+                                <FileImage src={controllerSigUrl} alt="Signature" style={{ maxHeight: '40px', objectFit: 'contain' }} />
                             ) : (
                                 <span style={{ fontSize: 16, fontWeight: 700, color: '#1e293b', fontFamily: "'Dancing Script', cursive, Georgia, serif" }}>{admin.signatoryName}</span>
                             )}
@@ -241,7 +242,7 @@ const Certificate = ({ result, onClose }) => {
             {/* Central faint watermark seal */}
             {boardSealUrl && (
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-[0.05] pointer-events-none z-0">
-                    <img src={boardSealUrl} alt="Watermark" style={{ width: '400px', height: '400px', objectFit: 'contain' }} />
+                    <FileImage src={boardSealUrl} alt="Watermark" style={{ width: '400px', height: '400px', objectFit: 'contain' }} />
                 </div>
             )}
             
@@ -252,7 +253,7 @@ const Certificate = ({ result, onClose }) => {
                     {/* Header Logo */}
                     {boardLogoUrl && (
                          <div className="flex justify-center mb-4">
-                             <img src={boardLogoUrl} alt="Board Logo" className="h-16 object-contain" />
+                              <FileImage src={boardLogoUrl} alt="Board Logo" className="h-16 object-contain" />
                          </div>
                     )}
                     <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[0.15em] text-[#2e3440]">
@@ -306,7 +307,7 @@ const Certificate = ({ result, onClose }) => {
                     <div className="flex justify-center flex-col items-center">
                         <div className="w-28 h-28 border-[3px] border-[#2e3440] rounded-full flex flex-col items-center justify-center p-1 relative shadow-sm" style={{mixBlendMode: 'multiply'}}>
                             {boardSealUrl ? (
-                                <img src={boardSealUrl} alt="Seal" className="w-[90%] h-[90%] object-contain opacity-80" />
+                                <FileImage src={boardSealUrl} alt="Seal" className="w-[90%] h-[90%] object-contain opacity-80" />
                             ) : (
                                 <div className="w-full h-full border border-dashed border-[#2e3440] rounded-full flex flex-col items-center justify-center text-center">
                                     <span className="text-[14px] font-bold uppercase leading-none tracking-widest">Official</span>
@@ -320,7 +321,7 @@ const Certificate = ({ result, onClose }) => {
                     <div className="text-center">
                         <div className="flex justify-center border-b border-slate-600 pb-1 mx-8 min-h-[50px] items-end">
                             {controllerSigUrl ? (
-                                <img src={controllerSigUrl} alt="Authorized Signature" className="max-h-[50px] object-contain" />
+                                <FileImage src={controllerSigUrl} alt="Authorized Signature" className="max-h-[50px] object-contain" />
                             ) : (
                                 <span className="text-xl italic font-serif" style={{ fontFamily: "'Dancing Script', cursive, serif"}}>{admin.signatoryName}</span>
                             )}

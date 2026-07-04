@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import {
   getStudents,
-  studentLogin,
+  login,
   createExamApplication,
   getExamResults,
   getExamApplications,
@@ -14,6 +14,7 @@ import {
   getSchools,
 } from "../api";
 import { searchExams as getExams } from "../api/exam-api";
+import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -30,6 +31,7 @@ import {
   Bell,
   Download,
   FileCheck,
+  ArrowLeft,
 } from "lucide-react";
 import MyResults from "../student/components/MyResults";
 import ApplyModal from "../student/components/ApplyModal";
@@ -42,6 +44,7 @@ import MyCertificates from "../student/components/MyCertificates";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
+  const { user, role, login: authLogin, logout: authLogout } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
   const [students, setStudents] = useState([]);
   const [exams, setExams] = useState([]);
@@ -52,7 +55,7 @@ const StudentDashboard = () => {
   const [centres, setCentres] = useState([]);
   const [schools, setSchools] = useState([]);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [loginEmail, setLoginEmail] = useState("demo@gmail.com");
+  const [loginEmail, setLoginEmail] = useState("rahuljoshi123@gmail.com");
   const [loginPassword, setLoginPassword] = useState("student123");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -67,6 +70,14 @@ const StudentDashboard = () => {
   });
 
   useEffect(() => {
+    if (user && role === "STUDENT") {
+      setCurrentUser(user);
+    }
+  }, [user, role]);
+
+  useEffect(() => {
+    if (!currentUser) return; // Don't fetch until user is logged in
+    
     const loadExams = async () => {
       try {
         const examPage = await getExams({ size: 1000 });
@@ -91,7 +102,7 @@ const StudentDashboard = () => {
     };
     loadExams();
     loadMasterData();
-  }, []);
+  }, [currentUser]);
 
   const fetchProfile = async (studentData) => {
     const studentIdToFetch = studentData?.studentId || currentUser?.studentId;
@@ -157,9 +168,15 @@ const StudentDashboard = () => {
 
     setIsLoggingIn(true);
     try {
-      const student = await studentLogin(loginEmail.trim(), loginPassword);
-      setCurrentUser(student);
-      toast.success(`Welcome back, ${student.firstName || student.email}!`);
+      const response = await login(loginEmail.trim(), loginPassword, "STUDENT");
+      const studentUser = {
+        studentId: response.userId,
+        email: response.username,
+        firstName: response.username.split("@")[0],
+      };
+      authLogin(response.token, response.role, studentUser);
+      setCurrentUser(studentUser);
+      toast.success(`Welcome back, ${studentUser.firstName}!`);
     } catch (error) {
       if (error.response?.status === 401) {
         toast.error("Invalid email or password. Please try again.");
@@ -200,104 +217,171 @@ const StudentDashboard = () => {
   // Skip down to rendering for brevity...
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 p-4">
-        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full border border-gray-100">
-          <div className="text-center mb-6">
-            <User size={48} className="mx-auto text-indigo-600 mb-3" />
-            <h2 className="text-3xl font-bold text-gray-800">Student Portal</h2>
-            <p className="text-gray-500 text-sm mt-2">
-              Sign in with your registered email and password
+      <div style={{ display:'flex', minHeight:'100vh', fontFamily:"'DM Sans','Segoe UI',sans-serif" }}>
+
+        {/* ── Left visual panel ── */}
+        <div style={{
+          flex:'0 0 44%', position:'relative', overflow:'hidden',
+          background:'linear-gradient(145deg,#1e1b4b 0%,#3730a3 45%,#4f46e5 100%)',
+          display:'flex', flexDirection:'column', justifyContent:'center', padding:'56px 48px',
+        }}>
+          {/* Grid */}
+          <div style={{ position:'absolute',inset:0,backgroundImage:'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',backgroundSize:'40px 40px',pointerEvents:'none' }} />
+          {/* Blobs */}
+          <div style={{ position:'absolute',top:'-15%',right:'-12%',width:360,height:360,borderRadius:'50%',background:'radial-gradient(circle,rgba(167,139,250,0.22) 0%,transparent 70%)',pointerEvents:'none' }} />
+          <div style={{ position:'absolute',bottom:'-10%',left:'-10%',width:280,height:280,borderRadius:'50%',background:'radial-gradient(circle,rgba(99,102,241,0.25) 0%,transparent 70%)',pointerEvents:'none' }} />
+
+          <div style={{ position:'relative', zIndex:1 }}>
+            {/* Logo */}
+            <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:52 }}>
+              <div style={{ width:40,height:40,borderRadius:10,background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.15)',display:'flex',alignItems:'center',justifyContent:'center' }}>
+                <GraduationCap size={20} color="#c4b5fd" />
+              </div>
+              <span style={{ fontSize:12,fontWeight:700,color:'rgba(255,255,255,0.65)',letterSpacing:'0.08em',textTransform:'uppercase' }}>MRB · Student Portal</span>
+            </div>
+
+            <p style={{ fontSize:11,fontWeight:700,color:'#c4b5fd',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10 }}>Your Exam Journey Starts Here</p>
+            <h1 style={{ fontSize:38,fontWeight:900,color:'#fff',lineHeight:1.15,margin:'0 0 16px',letterSpacing:'-0.02em' }}>
+              Student<br />
+              <span style={{ color:'#a78bfa' }}>Examination</span><br />
+              Portal
+            </h1>
+            <p style={{ fontSize:13,color:'rgba(255,255,255,0.5)',lineHeight:1.7,maxWidth:320,margin:'0 0 36px' }}>
+              Access your exam applications, download hall tickets, track results and manage your profile — all in one place.
             </p>
+
+            {/* Feature bullets */}
+            {[
+              'Browse &amp; apply for available exams',
+              'Download hall tickets instantly',
+              'View published results &amp; marks',
+              'Download merit certificates',
+            ].map(f => (
+              <div key={f} style={{ display:'flex',alignItems:'center',gap:10,marginBottom:10 }}>
+                <div style={{ width:6,height:6,borderRadius:'50%',background:'#a78bfa',flexShrink:0 }} />
+                <span style={{ fontSize:12,color:'rgba(255,255,255,0.6)',fontWeight:500 }} dangerouslySetInnerHTML={{ __html: f }} />
+              </div>
+            ))}
           </div>
+        </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email Field */}
-            <div>
-              <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                  <User size={18} />
+        {/* ── Right form panel ── */}
+        <div style={{ flex:1,background:'#f8fafc',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 32px',overflowY:'auto' }}>
+          <div style={{ width:'100%',maxWidth:400 }}>
+
+            {/* Header */}
+            <div style={{ marginBottom:32 }}>
+              <h2 style={{ fontSize:24,fontWeight:900,color:'#0f172a',margin:'0 0 6px',letterSpacing:'-0.02em' }}>Student Sign In</h2>
+              <p style={{ fontSize:13,color:'#64748b',margin:0,fontWeight:500 }}>Sign in with your registered email and password</p>
+            </div>
+
+            <form onSubmit={handleLogin} style={{ display:'flex',flexDirection:'column',gap:16 }}>
+
+              {/* Email */}
+              <div>
+                <label style={sls.label}>Email Address</label>
+                <div style={{ position:'relative' }}>
+                  <User size={16} style={{ position:'absolute',left:13,top:'50%',transform:'translateY(-50%)',color:'#94a3b8' }} />
+                  <input
+                    type="email"
+                    value={loginEmail}
+                    onChange={e => setLoginEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    required
+                    autoComplete="email"
+                    style={{ ...sls.input, paddingLeft:40 }}
+                    onFocus={e => e.target.style.borderColor = '#6366f1'}
+                    onBlur={e => e.target.style.borderColor = '#e2e8f0'}
+                  />
                 </div>
-                <input
-                  type="email"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  className="w-full pl-11 pr-4 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl transition-all duration-300 outline-none font-bold text-gray-700"
-                  required
-                  autoComplete="email"
-                />
               </div>
-            </div>
 
-            {/* Password Field */}
-            <div>
-              <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                  <LogOut size={18} className="rotate-180" />
+              {/* Password */}
+              <div>
+                <label style={sls.label}>Password</label>
+                <div style={{ position:'relative' }}>
+                  <LogOut size={16} style={{ position:'absolute',left:13,top:'50%',transform:'translateY(-50%) rotate(180deg)',color:'#94a3b8' }} />
+                  <input
+                    type={showLoginPassword ? "text" : "password"}
+                    value={loginPassword}
+                    onChange={e => setLoginPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                    autoComplete="current-password"
+                    style={{ ...sls.input, paddingLeft:40, paddingRight:44 }}
+                    onFocus={e => e.target.style.borderColor = '#6366f1'}
+                    onBlur={e => e.target.style.borderColor = '#e2e8f0'}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(v => !v)}
+                    style={{ position:'absolute',right:12,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'#94a3b8',display:'flex',alignItems:'center' }}
+                  >
+                    {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
-                <input
-                  type={showLoginPassword ? "text" : "password"}
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="w-full pl-11 pr-12 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl transition-all duration-300 outline-none font-bold text-gray-700"
-                  required
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowLoginPassword(!showLoginPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {showLoginPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
               </div>
+
+              {/* Login btn */}
+              <button
+                type="submit"
+                disabled={isLoggingIn}
+                style={{
+                  width:'100%', padding:'13px 0', borderRadius:10, border:'none',
+                  cursor: isLoggingIn ? 'not-allowed':'pointer',
+                  background:'linear-gradient(135deg,#4f46e5,#7c3aed)',
+                  color:'#fff', fontSize:13, fontWeight:800,
+                  boxShadow:'0 4px 16px rgba(99,102,241,0.4)',
+                  opacity: isLoggingIn ? 0.7 : 1,
+                  display:'flex', alignItems:'center', justifyContent:'center', gap:8,
+                  transition:'opacity 0.2s',
+                }}
+              >
+                {isLoggingIn
+                  ? <><div style={{ width:16,height:16,border:'2px solid rgba(255,255,255,0.3)',borderTop:'2px solid #fff',borderRadius:'50%',animation:'studentspin 0.8s linear infinite' }} />Signing in…</>
+                  : <><LogOut size={16} style={{ transform:'rotate(180deg)' }} />Sign In</>
+                }
+              </button>
+
+              {/* Divider */}
+              <div style={{ display:'flex',alignItems:'center',gap:12 }}>
+                <div style={{ flex:1,height:1,background:'#e2e8f0' }} />
+                <span style={{ fontSize:10,fontWeight:700,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'0.15em' }}>or</span>
+                <div style={{ flex:1,height:1,background:'#e2e8f0' }} />
+              </div>
+
+              {/* Register btn */}
+              <button
+                type="button"
+                onClick={() => navigate("/student/register")}
+                style={{
+                  width:'100%', padding:'12px 0', borderRadius:10, cursor:'pointer',
+                  background:'#fff', border:'1.5px solid #e0e7ff', color:'#4f46e5',
+                  fontSize:13, fontWeight:700,
+                  display:'flex', alignItems:'center', justifyContent:'center', gap:8,
+                  transition:'border-color 0.18s, background 0.18s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background='#eef2ff'; e.currentTarget.style.borderColor='#6366f1'; }}
+                onMouseLeave={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.borderColor='#e0e7ff'; }}
+              >
+                <UserPlus size={15} /> Create New Account
+              </button>
+            </form>
+
+            {/* Footer */}
+            <div style={{ marginTop:28,paddingTop:20,borderTop:'1px solid #e2e8f0',display:'flex',flexDirection:'column',alignItems:'center',gap:10 }}>
+              <p style={{ fontSize:10,color:'#94a3b8',textAlign:'center',textTransform:'uppercase',letterSpacing:'0.08em',margin:0 }}>
+                Use the email and password you registered with. Contact your school admin for help.
+              </p>
+              <button
+                onClick={() => navigate("/")}
+                style={{ display:'flex',alignItems:'center',gap:6,background:'none',border:'none',cursor:'pointer',fontSize:12,fontWeight:600,color:'#64748b' }}
+              >
+                <ArrowLeft size={14} /> Back to Home
+              </button>
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              disabled={isLoggingIn}
-              className={`w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 transition-all duration-300 flex items-center justify-center gap-2 ${isLoggingIn ? "opacity-70 cursor-not-allowed" : "hover:shadow-indigo-300"
-                }`}
-            >
-              {isLoggingIn ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <LogOut size={20} className="rotate-180" />
-              )}
-              {isLoggingIn ? "Authenticating..." : "Login to Portal"}
-            </motion.button>
-
-            <div className="flex items-center gap-4 py-2">
-              <div className="h-px flex-1 bg-gray-100" />
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">OR</span>
-              <div className="h-px flex-1 bg-gray-100" />
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => navigate("/student/register")}
-              type="button"
-              className="w-full bg-white border-2 border-indigo-100 text-indigo-600 font-bold py-4 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <UserPlus size={20} />
-              Create New Account
-            </motion.button>
-          </form>
-
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <p className="text-[10px] text-gray-400 text-center uppercase tracking-widest leading-relaxed">
-              Use the email and password you registered with. Contact your school admin if you need help.
-            </p>
+            <style>{`@keyframes studentspin { to { transform: rotate(360deg); } }`}</style>
           </div>
         </div>
       </div>
@@ -453,7 +537,7 @@ const StudentDashboard = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       currentUser={currentUser}
-      onLogout={() => setCurrentUser(null)}
+      onLogout={() => { authLogout(); setCurrentUser(null); }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {renderContent()}
@@ -496,6 +580,21 @@ const StudentDashboard = () => {
       </div>
     </StudentLayout>
   );
+};
+
+/* ── Student Login panel styles ── */
+const sls = {
+  label: {
+    display: 'block', fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+    letterSpacing: '0.08em', color: '#64748b', marginBottom: 6,
+  },
+  input: {
+    width: '100%', padding: '11px 14px', fontSize: 13, fontWeight: 500,
+    color: '#0f172a', background: '#fff', border: '1.5px solid #e2e8f0',
+    borderRadius: 9, outline: 'none', boxSizing: 'border-box',
+    transition: 'border-color 0.18s',
+    fontFamily: "'DM Sans','Segoe UI',sans-serif",
+  },
 };
 
 export default StudentDashboard;

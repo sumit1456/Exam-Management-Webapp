@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getStudentProfile, createStudentProfileAPI, updateStudentProfile, uploadFiles } from "../../api";
+import FileImage from "../../common/components/FileImage";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { User, MapPin, CheckCircle, AlertCircle, Save, Calendar, Phone, Book, Camera, Upload, XCircle, FileText, GraduationCap, ArrowRight, ShieldCheck } from "lucide-react";
@@ -321,7 +322,11 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
                 <div style={s.photoBox}>
                     {(previews.photo || formData.profilePhotoUrl) ? (
                         <div style={s.imagePreview}>
-                            <img src={previews.photo || formData.profilePhotoUrl} alt="Photo" style={s.img} />
+                            {previews.photo ? (
+                                <img src={previews.photo} alt="Photo" style={s.img} />
+                            ) : (
+                                <FileImage src={formData.profilePhotoUrl} alt="Photo" style={s.img} />
+                            )}
                             {isEditing && (
                                 <label style={s.uploadOverlay}>
                                     <Camera size={20} color="#fff" />
@@ -356,7 +361,11 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
                   <div style={s.sigBox}>
                     {(previews.signature || formData.signatureUrl) ? (
                         <div style={s.imagePreview}>
-                            <img src={previews.signature || formData.signatureUrl} alt="Sig" style={s.imgContain} />
+                            {previews.signature ? (
+                                <img src={previews.signature} alt="Sig" style={s.imgContain} />
+                            ) : (
+                                <FileImage src={formData.signatureUrl} alt="Sig" style={s.imgContain} />
+                            )}
                             {isEditing && (
                                 <label style={s.uploadOverlay}>
                                     <Upload size={16} color="#fff" />

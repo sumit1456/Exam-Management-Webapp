@@ -1,6 +1,6 @@
 # MRB Exam Management System - Frontend
 
-A comprehensive React-based frontend application for the Maharashtra Rashtrabhasha Sabha (MRB) Exam Management System. This system manages Hindi language proficiency examinations (Rashtrabhasha Pravin Pariksha) including student registration, exam applications, result publishing, and certificate generation.
+React SPA for the **Maharashtra Rashtrabhasha Sabha (MRB)** exam system. Manages Hindi proficiency exams (Rashtrabhasha Pravin Pariksha): student registration, applications, hall tickets, results, and certificates.
 
 ## 🚀 Project Overview
 
@@ -9,7 +9,11 @@ This is a modern, responsive web application built with React 19, Vite, and Tail
 - **Admin Portal**: For administrators to manage exams, students, schools, regions, exam centers, applications, and results
 - **Student Portal**: For students to register, apply for exams, view results, download hall tickets, and access certificates
 
-## ✨ Key Features
+```bash
+cd MRB-DEMO-FRONTEND-main
+npm install
+npm run dev          # http://localhost:5173
+```
 
 ### Admin Portal Features
 - **Dashboard**: Comprehensive analytics with charts showing student statistics, application trends, and result distributions
@@ -23,14 +27,7 @@ This is a modern, responsive web application built with React 19, Vite, and Tail
 - **Global Search**: Unified search across all entities (students, applications, exams, schools)
 - **Result Viewer**: View and analyze published results with detailed breakdowns
 
-### Student Portal Features
-- **Student Registration**: New student registration with validation and school selection
-- **Student Login**: Secure authentication for existing students
-- **Exam Application**: Apply for available exams with detailed application form
-- **Hall Ticket Generation**: Download hall tickets with exam details and center information
-- **Result Viewing**: View exam results with detailed marksheet
-- **Certificate Management**: Download and manage certificates
-- **Profile Management**: View and update student profile information
+**Requirements:** Node.js 18+
 
 ## 🛠️ Technology Stack
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Printer, X, LayoutDashboard, FileText, CheckCircle, AlertCircle, Award, Target, BookOpen } from 'lucide-react'
+import FileImage from '../../common/components/FileImage'
 
 const Marksheet = ({ result, onClose }) => {
   const [viewMode, setViewMode] = useState('modern')
@@ -348,7 +349,7 @@ const Marksheet = ({ result, onClose }) => {
           </div>
           <div className="w-full md:w-32 h-32 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center shadow-inner shrink-0 overflow-hidden">
              {profile?.profilePhotoUrl ? (
-                <img src={profile.profilePhotoUrl} alt="Candidate" className="w-full h-full object-cover" />
+                 <FileImage src={profile.profilePhotoUrl} alt="Candidate" className="w-full h-full object-cover" />
              ) : <Target size={32} className="text-slate-300"/>}
           </div>
         </div>

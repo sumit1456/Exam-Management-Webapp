@@ -1,8 +1,7 @@
 import axios from "axios";
+import { getCookie, removeCookie } from "./utils/cookie";
 
-const API_URL = "https://webapp-w7f4.onrender.com";
-
-const API_URL2 = "http://localhost:8080";
+const API_URL = "http://localhost:8080";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -10,6 +9,33 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+api.interceptors.request.use((config) => {
+  const token = getCookie("jwt_token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const requestUrl = error.config?.url || "";
+    const isLoginRequest = requestUrl.includes("/auth/login");
+    const hasToken = !!getCookie("jwt_token");
+    
+    // Only redirect on 401 if user HAS a token (session expired)
+    // Don't redirect if no token (user is on login page, not authenticated yet)
+    if (error.response?.status === 401 && !isLoginRequest && hasToken) {
+      removeCookie("jwt_token");
+      removeCookie("jwt_role");
+      removeCookie("jwt_user");
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
 
 // --- STUDENT ENDPOINTS ---
 /**
@@ -447,18 +473,49 @@ export const deleteFile = async (objectName) => {
   return response.data;
 };
 
-// --- AUTH ENDPOINTS ---
 /**
- * POST /auth/student/login
- * Accepts { username: email, password } and returns StudentDTO or throws on 401
+ * GET /files/url - Get fresh presigned URL for a file
  */
-export const studentLogin = async (email, password) => {
-  const response = await api.post("/auth/student/login", {
-    username: email,
-    password: password,
+export const getFileUrl = async (objectName) => {
+  const response = await api.get(`/files/url`, {
+    params: { objectName },
+  });
+  return response.data.url;
+};
+
+// --- EXAM OFFICER ENDPOINTS ---
+export const getExamOfficers = async () => {
+  const response = await api.get("/exam-officer");
+  return response.data;
+};
+
+export const getExamOfficerById = async (id) => {
+  const response = await api.get(`/exam-officer/${id}`);
+  return response.data;
+};
+
+export const createExamOfficer = async (data) => {
+  const response = await api.post("/exam-officer", data);
+  return response.data;
+};
+
+export const updateExamOfficer = async (id, data) => {
+  const response = await api.put(`/exam-officer/${id}`, data);
+  return response.data;
+};
+
+export const deleteExamOfficer = async (id) => {
+  const response = await api.delete(`/exam-officer/${id}`);
+  return response.data;
+};
+
+// --- AUTH ENDPOINTS ---
+export const login = async (username, password, role = "STUDENT") => {
+  const response = await api.post(`/auth/login?role=${role}`, {
+    username,
+    password,
   });
   return response.data;
 };
 
 export default api;
-

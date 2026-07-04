@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LandingPage from "./pages/LandingPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import ExamOfficerDashboard from "./pages/ExamOfficerDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import StudentRegistration from "./pages/StudentRegistration";
 
@@ -28,6 +29,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/manage/:type/:id" element={<AdminDashboard />} /> { /* We can handle it inside AdminDashboard or as a separate page */}
+            <Route path="/exam-officer" element={<ExamOfficerDashboard />} />
             <Route path="/student" element={<StudentDashboard />} />
             <Route path="/student/register" element={<StudentRegistration />} />
           </Routes>

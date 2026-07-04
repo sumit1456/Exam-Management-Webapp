@@ -12,17 +12,23 @@ import {
     ChevronDown,
     Monitor,
     Database,
-    Search
+    Search,
+    UserCog,
+    LogOut,
+    Shield
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
+    const { user, role, logout } = useAuth();
     const menuItems = [
         { id: 'dashboard', label: 'DASHBOARD', icon: LayoutDashboard, hasSub: true },
         { id: 'regions', label: 'Regions', icon: MapPin },
         { id: 'exam_centres', label: 'Exam Centres', icon: Building2 },
         { id: 'schools', label: 'Schools', icon: School },
         { id: 'students', label: 'Students', icon: Users },
+        { id: 'exam_officers', label: 'Exam Officers', icon: UserCog },
         { id: 'exams', label: 'Exams', icon: BookOpen },
         { id: 'applications', label: 'Applications', icon: FileText },
         { id: 'publish', label: 'Publish Results', icon: Send },
@@ -78,6 +84,39 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                     </div>
                 ))}
             </nav>
+
+            {/* User Info Section */}
+            <div className="px-4 pb-4 mt-auto">
+                <div className="bg-black/20 rounded-xl p-4 border border-white/5">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                            <Shield size={18} className="text-blue-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-white truncate">
+                                {user?.name || user?.username || 'Admin'}
+                            </p>
+                            <p className="text-xs text-gray-400 uppercase tracking-wider">
+                                {role || 'ADMIN'}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1 flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                            <span className="text-xs text-green-400 font-medium">Authenticated</span>
+                        </div>
+                        <button
+                            onClick={logout}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            title="Logout"
+                        >
+                            <LogOut size={14} />
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

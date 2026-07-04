@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Printer, CheckCircle, AlertCircle, ArrowRight, FileText, LayoutDashboard } from "lucide-react";
 import toast from "react-hot-toast";
 import { createExamApplication, getStudentProfileByStudentIdString } from "../../api";
+import FileImage from "../../common/components/FileImage";
 
 const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
   const [agreed, setAgreed] = useState(false);
@@ -111,7 +112,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
           <div className="w-24 h-24 bg-white rounded-2xl shadow-lg p-2 flex items-center justify-center shrink-0 border border-blue-400/30">
             {(exam.boardLogoUrl || exam.boardSealUrl) ? (
-              <img src={exam.boardLogoUrl || exam.boardSealUrl} alt="Logo" className="w-full h-full object-contain" />
+              <FileImage src={exam.boardLogoUrl || exam.boardSealUrl} alt="Logo" className="w-full h-full object-contain" />
             ) : (
               <span className="text-3xl font-black text-slate-800 tracking-tighter">MRB</span>
             )}
@@ -139,7 +140,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-8">
             <div className="w-32 h-40 shrink-0 bg-slate-50 rounded-xl border border-slate-200 overflow-hidden shadow-inner flex items-center justify-center text-slate-400 text-xs text-center p-4">
               {profile?.profilePhotoUrl ? (
-                <img src={profile.profilePhotoUrl} alt="Photo" className="w-full h-full object-cover" />
+                <FileImage src={profile.profilePhotoUrl} alt="Photo" className="w-full h-full object-cover" />
               ) : "No Photo Available"}
             </div>
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-4">
@@ -232,19 +233,19 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center gap-2 h-32">
               {profile?.signatureUrl ? (
-                <img src={profile.signatureUrl} alt="Sign" className="max-h-12 opacity-80" />
+                <FileImage src={profile.signatureUrl} alt="Sign" className="max-h-12 opacity-80" />
               ) : <span className="text-xs text-amber-500 font-bold bg-amber-50 px-2 py-1 rounded">Missing</span>}
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Candidate</span>
             </div>
             <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center gap-2 h-32">
               {principalSigUrl ? (
-                <img src={principalSigUrl} alt="Sign" className="max-h-12 opacity-80" />
+                <FileImage src={principalSigUrl} alt="Sign" className="max-h-12 opacity-80" />
               ) : <span className="text-xs text-amber-500 font-bold bg-amber-50 px-2 py-1 rounded">Missing</span>}
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Principal</span>
             </div>
             <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center gap-2 h-32 col-span-2 md:col-span-1">
               {schoolStampUrl ? (
-                <img src={schoolStampUrl} alt="Sign" className="max-h-12 opacity-80" />
+                <FileImage src={schoolStampUrl} alt="Sign" className="max-h-12 opacity-80" />
               ) : <span className="text-xs text-amber-500 font-bold bg-amber-50 px-2 py-1 rounded">Missing</span>}
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">School Stamp</span>
             </div>
@@ -369,11 +370,11 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
           <div className="header" style={{ position: 'relative' }}>
             {/* Board Seal - top left */}
             {exam.boardSealUrl && (
-              <img src={exam.boardSealUrl} alt="Board Seal" style={{ position:'absolute', left:0, top:0, width:'80px', height:'80px', objectFit:'contain' }} />
+              <FileImage src={exam.boardSealUrl} alt="Board Seal" style={{ position:'absolute', left:0, top:0, width:'80px', height:'80px', objectFit:'contain' }} />
             )}
             {/* Board Logo - top right */}
             {exam.boardLogoUrl && (
-              <img src={exam.boardLogoUrl} alt="Board Logo" style={{ position:'absolute', right:0, top:0, width:'80px', height:'80px', objectFit:'contain' }} />
+              <FileImage src={exam.boardLogoUrl} alt="Board Logo" style={{ position:'absolute', right:0, top:0, width:'80px', height:'80px', objectFit:'contain' }} />
             )}
             <h1>Maharashtra Rashtrabhasha Sabha, Pune</h1>
             <p>387, Narayan Peth, Pune – 411 030 | Form No: MRS/2026/A-{Math.floor(Math.random() * 9000) + 1000}</p>
@@ -382,7 +383,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
 
           <div className="photo-box">
             {profile?.profilePhotoUrl ? (
-              <img src={profile.profilePhotoUrl} alt="Passport Size" className="w-full h-full object-cover" />
+              <FileImage src={profile.profilePhotoUrl} alt="Passport Size" className="w-full h-full object-cover" />
             ) : (
               <>AFFIX RECENT<br/>PASSPORT SIZE<br/>PHOTOGRAPH<br/>HERE</>
             )}
@@ -499,7 +500,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
             <div className="stamp-signature">
               <div className="sign-box">
                 {profile?.signatureUrl ? (
-                  <img src={profile.signatureUrl} alt="Signature" className="max-h-full p-2 object-contain" />
+                  <FileImage src={profile.signatureUrl} alt="Signature" className="max-h-full p-2 object-contain" />
                 ) : (
                   <span className="opacity-30">CANDIDATE SIGN</span>
                 )}
@@ -507,10 +508,10 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
               </div>
               <div className="sign-box" style={{ backgroundColor: 'transparent', border: 'none', position: 'relative' }}>
                 {schoolStampUrl && (
-                  <img src={schoolStampUrl} alt="School Stamp" className="absolute opacity-20 max-w-full max-h-[80px] object-contain" />
+                  <FileImage src={schoolStampUrl} alt="School Stamp" className="absolute opacity-20 max-w-full max-h-[80px] object-contain" />
                 )}
                 {principalSigUrl ? (
-                  <img src={principalSigUrl} alt="Principal Signature" className="max-h-[60px] p-1 object-contain mb-1 z-10" />
+                  <FileImage src={principalSigUrl} alt="Principal Signature" className="max-h-[60px] p-1 object-contain mb-1 z-10" />
                 ) : (
                   <span className="opacity-30">OFFICIAL STAMP</span>
                 )}
@@ -518,7 +519,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
               </div>
               <div className="sign-box" style={{ backgroundColor: 'transparent', border: 'none' }}>
                 {(exam.boardLogoUrl || exam.boardSealUrl) ? (
-                  <img src={exam.boardLogoUrl || exam.boardSealUrl} alt="Sabha Seal" className="max-h-[70px] p-1 object-contain opacity-50 mb-1" />
+                  <FileImage src={exam.boardLogoUrl || exam.boardSealUrl} alt="Sabha Seal" className="max-h-[70px] p-1 object-contain opacity-50 mb-1" />
                 ) : (
                   <span className="opacity-30">SABHA SEAL</span>
                 )}

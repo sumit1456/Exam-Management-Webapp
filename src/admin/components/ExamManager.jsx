@@ -1242,7 +1242,7 @@ const ExamManager = ({
                         <p style={s.cardSub}>{steps[activeStep].title} · Step {activeStep + 1} of {steps.length}</p>
                     </div>
                     {isEditing && (
-                        <button onClick={resetExamForm} style={s.cancelBtn}>
+                        <button type="button" onClick={resetExamForm} style={s.cancelBtn}>
                             <X size={12} /> Cancel Edit
                         </button>
                     )}
@@ -1264,7 +1264,7 @@ const ExamManager = ({
                     ))}
                 </div>
 
-                <form onSubmit={onFormSubmit} style={{ minHeight: 380, display: 'flex', flexDirection: 'column' }}>
+                <form onSubmit={onFormSubmit} onKeyDown={e => { if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); }} style={{ minHeight: 380, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ flex: 1 }}>
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -1531,11 +1531,11 @@ const ExamManager = ({
                             <ChevronLeft size={16} /> Prev
                         </button>
                         {activeStep < steps.length - 1 ? (
-                            <button type="button" onClick={nextStep} data-testid="next-wizard-button" style={s.primaryBtn}>
+                            <button key="next-btn" type="button" onClick={nextStep} data-testid="next-wizard-button" style={s.primaryBtn}>
                                 Next <ChevronRight size={16} />
                             </button>
                         ) : (
-                            <button type="submit" data-testid="next-wizard-button" style={{ ...s.primaryBtn, background: '#2F9E44' }}>
+                            <button key="submit-btn" type="submit" data-testid="next-wizard-button" style={{ ...s.primaryBtn, background: '#2F9E44' }}>
                                 {isEditing ? 'Update Exam' : 'Create Exam'}
                             </button>
                         )}
@@ -1630,7 +1630,9 @@ const UploadField = ({ label, field, examForm, setExamForm, uploading, handleFil
                     {uploading[field] ? <Loader2 size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <Upload size={12} />}
                     {uploading[field] ? 'Uploading…' : url ? 'Change' : `Upload ${label}`}
                     <input type="file" style={{ display: 'none' }} accept="image/*"
-                        onChange={e => handleFileUpload(field, e.target.files[0])} disabled={uploading[field]} />
+                        onClick={e => e.stopPropagation()}
+                        onChange={e => { e.stopPropagation(); handleFileUpload(field, e.target.files[0]); }}
+                        disabled={uploading[field]} />
                 </label>
             </div>
         </div>
