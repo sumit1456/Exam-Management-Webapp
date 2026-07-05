@@ -7,8 +7,7 @@ import {
   createExamApplication,
   getExamResults,
   getExamApplications,
-  getStudentProfile,
-  getStudentProfileByStudentIdString,
+  getMyStudentProfile,
   getRegions,
   getExamCentres,
   getSchools,
@@ -106,11 +105,8 @@ const StudentDashboard = () => {
   }, [currentUser]);
 
   const fetchProfile = async (studentData) => {
-    const studentIdToFetch = studentData?.studentId || currentUser?.studentId;
-    if (!studentIdToFetch) return null;
     try {
-      // Use the new endpoint instead of the old one
-      const data = await getStudentProfileByStudentIdString(studentIdToFetch);
+      const data = await getMyStudentProfile();
       setStudentProfile(data);
       return data;
     } catch (error) {
@@ -200,17 +196,41 @@ const StudentDashboard = () => {
     }
   };
 
-  const openApplyModal = (exam) => {
+  const openApplyModal = async (exam) => {
     if (!currentUser) return toast.error("Please select a user first");
-    if (!currentUser.hasProfile) {
-      setActiveTab("profile");
-      return toast.error("Please complete your profile first before applying.");
+
+    let profileData = studentProfile;
+    if (!profileData) {
+      try {
+        profileData = await getMyStudentProfile();
+        setStudentProfile(profileData);
+      } catch {
+        setActiveTab("profile");
+        return toast.error("Please complete your profile first before applying.");
+      }
     }
+
+    const requiredFields = [
+      profileData?.dateOfBirth,
+      profileData?.fatherName,
+      profileData?.gender,
+      profileData?.address?.line1,
+      profileData?.address?.villageOrCity,
+      profileData?.address?.state,
+      profileData?.address?.pincode,
+    ];
+    const isProfileComplete = requiredFields.every(Boolean);
+
+    if (!isProfileComplete) {
+      setActiveTab("profile");
+      return toast.error("Please complete your profile before applying. Fill in all required fields.");
+    }
+
     setSelectedExam(exam);
   };
 
   const handleProfileUpdated = async () => {
-    // Optionally refetch current user or update state to reflect profile completion
+    await fetchProfile(currentUser);
     setCurrentUser(prev => ({ ...prev, hasProfile: true }));
     setActiveTab("exams");
   };

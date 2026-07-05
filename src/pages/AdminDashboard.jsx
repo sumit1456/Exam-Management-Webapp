@@ -54,7 +54,6 @@ import {
   getSchools,
   getRegions,
   getAnalyticsSummary,
-  getStudentCountByRegion,
 } from "../api";
 import { createExam, updateExam, deleteExam, searchExams as getExams } from "../api/exam-api";
 
@@ -290,15 +289,6 @@ const AdminDashboard = () => {
     queryKey: ["analyticsSummary"],
     queryFn: () => getAnalyticsSummary(),
     enabled: !!user,
-  });
-
-  // Fetch counts per region
-  const regionCountQueries = useQueries({
-    queries: regions.map(region => ({
-      queryKey: ['regionStudentCount', region.regionId],
-      queryFn: () => getStudentCountByRegion(region.regionId),
-      enabled: !!region.regionId
-    }))
   });
 
   const loading = isLoadingStudents || isLoadingExams || isLoadingApplications || isLoadingResults || isLoadingSchools || isLoadingRegions || isLoadingAnalytics;
@@ -597,9 +587,7 @@ const AdminDashboard = () => {
     setActiveTab("application_detail");
   };
 
-  // Process Application Trends (mocking actual dates if missing, or using real ones if structured)
   const applicationTrends = useMemo(() => {
-    // Group applications by date (last 7 days or any structured data)
     const last7Days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - (6 - i));
@@ -608,24 +596,20 @@ const AdminDashboard = () => {
 
     return last7Days.map(date => ({
       date: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      count: applications.filter(app => (app.appliedAt || "").startsWith(date)).length || Math.floor(Math.random() * 5) // Fallback random for demo if data is thin
+      count: applications.filter(app => (app.appliedAt || "").startsWith(date)).length
     }));
   }, [applications]);
 
   const COLORS = ['#4c84ff', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
-  // Process Student Distribution by Region using the analytics endpoint queries
   const regionData = useMemo(() => {
-    return regions.map((region, index) => {
-      const countData = regionCountQueries[index]?.data;
-      const count = typeof countData === 'number' ? countData : 0;
-      return {
-        name: region.regionName,
-        value: count, 
-        color: COLORS[index % COLORS.length]
-      };
-    }).filter(r => r.value > 0);
-  }, [regions, regionCountQueries]);
+    const studentsByRegion = analyticsSummary?.distribution?.studentsByRegion || {};
+    return Object.entries(studentsByRegion).map(([name, count], index) => ({
+      name,
+      value: count,
+      color: COLORS[index % COLORS.length]
+    }));
+  }, [analyticsSummary]);
 
   const handleSearchResultSelect = (tab, id) => {
     setActiveTab(tab);
@@ -821,19 +805,21 @@ const AdminDashboard = () => {
       {activeTab === "dashboard" && !id && (
         <ModernAdminDashboard 
           stats={{
-            totalStudents: analyticsSummary?.totalStudents || analyticsSummary?.studentCount || studentsPage?.totalElements || students.length,
-            totalExams: analyticsSummary?.totalExams || analyticsSummary?.examCount || examsPage?.totalElements || exams.length,
-            activeApplications: analyticsSummary?.totalApplications || analyticsSummary?.applicationCount || applicationsPage?.totalElements || applications.length,
-            totalResults: analyticsSummary?.totalResults || analyticsSummary?.resultCount || resultsPage?.totalElements || results.length
+            totalStudents: analyticsSummary?.summary?.totalStudents || studentsPage?.totalElements || students.length,
+            totalExams: analyticsSummary?.summary?.totalCentres || examsPage?.totalElements || exams.length,
+            activeApplications: analyticsSummary?.summary?.totalSchools || applicationsPage?.totalElements || applications.length,
+            totalResults: analyticsSummary?.summary?.totalRegions || resultsPage?.totalElements || results.length
           }}
           applicationTrends={applicationTrends.map(t => ({ label: t.date, value: t.count }))}
           regionData={(() => {
             const total = regionData.reduce((sum, r) => sum + r.value, 0);
             return regionData.map(r => ({
               name: r.name,
+              value: r.value,
               pct: total > 0 ? Math.round((r.value / total) * 100) : 0
             }));
           })()}
+          topSchools={analyticsSummary?.topSchools || []}
           recentApplications={applications.slice(0, 6).map(a => ({
             name: a.studentName || (a.student?.full_name) || "Unknown",
             meta: `App #${a.applicationId} · ${a.examName || a.exam?.exam_name || "N/A"}`,
@@ -852,7 +838,6 @@ const AdminDashboard = () => {
           onViewAllResults={() => setActiveTab('results')}
           onReviewApplication={handleReviewApplication}
           onViewResult={(res) => {
-            // Logic to view result - might need to set activeTab or similar
             setActiveTab('results');
           }}
         />

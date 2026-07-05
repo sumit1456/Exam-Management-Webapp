@@ -385,6 +385,16 @@ export const getStudentCountByExamCentre = async (centreId) => {
 };
 
 // --- STUDENT PROFILE ENDPOINTS ---
+export const getMyStudentProfile = async () => {
+  const response = await api.get("/studentProfiles/me");
+  return response.data;
+};
+
+export const updateMyStudentProfile = async (profileData) => {
+  const response = await api.put("/studentProfiles/me", profileData);
+  return response.data;
+};
+
 export const getStudentProfile = async (id) => {
   const response = await api.get(`/studentProfiles/${id}`);
   return response.data;

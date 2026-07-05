@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Printer, CheckCircle, AlertCircle, ArrowRight, FileText, LayoutDashboard } from "lucide-react";
+import { X, Printer, CheckCircle, AlertCircle, ArrowRight, FileText, LayoutDashboard, Calendar, User, CheckSquare, FileSignature, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
-import { createExamApplication, getStudentProfileByStudentIdString } from "../../api";
+import { createExamApplication, getMyStudentProfile } from "../../api";
 import FileImage from "../../common/components/FileImage";
 
 const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
@@ -47,25 +47,42 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
   // All papers are opted by default (student applies for all)
   const optedPapers = papers.map((p) => p.name);
 
+  const [profileComplete, setProfileComplete] = useState(true);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const data = await getStudentProfileByStudentIdString(student.studentId);
+        const data = await getMyStudentProfile();
         setProfile(data);
+
+        const requiredFields = [
+          data?.dateOfBirth,
+          data?.fatherName,
+          data?.gender,
+          data?.address?.line1,
+          data?.address?.villageOrCity,
+          data?.address?.state,
+          data?.address?.pincode,
+        ];
+        setProfileComplete(requiredFields.every(Boolean));
       } catch (err) {
         console.error("Failed to fetch profile:", err);
+        setProfileComplete(false);
       } finally {
         setLoading(false);
       }
     };
-    if (student?.studentId) {
-      fetchProfile();
-    }
-  }, [student]);
+    fetchProfile();
+  }, []);
 
   if (!exam || !student) return null;
 
   const handleSubmit = async () => {
+    if (!profileComplete) {
+      setError("Please complete your profile before applying.");
+      toast.error("Please complete your profile before applying.");
+      return;
+    }
     if (!agreed) {
       setError("Please accept the declaration before submitting");
       toast.error("Please accept the declaration before submitting");
@@ -273,11 +290,17 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
             </div>
           )}
 
+          {!profileComplete && (
+            <div className="mb-6 p-4 bg-amber-50 text-amber-700 rounded-xl border border-amber-100 text-sm font-bold flex items-center gap-2">
+              <AlertCircle size={18} /> Your profile is incomplete. Please fill in all required fields (DOB, Father's Name, Address) before submitting.
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
             <button onClick={onClose} className="px-6 py-4 rounded-xl font-bold text-slate-500 bg-slate-50 hover:bg-slate-100 transition-colors">
               Cancel
             </button>
-            <button onClick={handleSubmit} className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all">
+            <button onClick={handleSubmit} disabled={!profileComplete || !agreed} className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
               Submit Digital Application <ChevronRight size={20} />
             </button>
           </div>
@@ -582,13 +605,20 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
             
             {error && <div style={s.errorBox}><AlertCircle size={14} /> {error}</div>}
 
+            {!profileComplete && (
+              <div style={{...s.errorBox, backgroundColor: '#fffbeb', color: '#92400e', borderColor: '#fef3c7'}}>
+                <AlertCircle size={14} /> Profile incomplete — fill required fields (DOB, Father's Name, Address) before submitting.
+              </div>
+            )}
+
             <div style={s.actionRow}>
               <button onClick={onClose} style={s.footerCancelBtn}>
                 CANCEL
               </button>
               <button 
                 onClick={handleSubmit} 
-                style={s.footerSubmitBtn}
+                style={{...s.footerSubmitBtn, opacity: !profileComplete || !agreed ? 0.5 : 1, cursor: !profileComplete || !agreed ? 'not-allowed' : 'pointer'}}
+                disabled={!profileComplete || !agreed}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3b6ddb'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4c84ff'}
               >

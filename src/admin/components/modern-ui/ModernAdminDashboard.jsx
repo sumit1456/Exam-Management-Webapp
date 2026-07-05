@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
+} from 'recharts';
 
-/*
-  Props:
-  - stats: { totalStudents, totalExams, activeApplications, totalResults }
-  - applicationTrends: [{ label: 'Mar 12', value: 4 }, ...]
-  - regionData: [{ name: 'Nashik', pct: 40 }, ...]
-  - recentApplications: [{ name, meta, status, initials, original }, ...]
-  - recentResults: [{ exam, date, score, original }, ...]
-  - onViewAllApplications: fn
-  - onViewAllResults: fn
-  - onReviewApplication: fn
-  - onViewResult: fn
-*/
+const COLORS = ['#4361EE', '#2F9E44', '#F59F00', '#E03131', '#AE3EC9', '#E67700', '#0CA678', '#1971C2'];
+
 export default function ModernAdminDashboard({
     stats = {},
     applicationTrends = [],
     regionData = [],
+    topSchools = [],
     recentApplications = [],
     recentResults = [],
     onViewAllApplications,
@@ -23,34 +18,38 @@ export default function ModernAdminDashboard({
     onReviewApplication,
     onViewResult,
 }) {
-    const [hoveredBar, setHoveredBar] = useState(null);
-
     const { totalStudents = 0, totalExams = 0, activeApplications = 0, totalResults = 0 } = stats;
 
     const kpis = [
         { label: 'Total Students', value: totalStudents, accent: '#4361EE' },
-        { label: 'Total Exams', value: totalExams, accent: '#F59F00' },
-        { label: 'Active Applications', value: activeApplications, accent: '#2F9E44' },
-        { label: 'Total Results', value: totalResults, accent: '#AE3EC9' },
+        { label: 'Exam Centres', value: totalExams, accent: '#F59F00' },
+        { label: 'Total Schools', value: activeApplications, accent: '#2F9E44' },
+        { label: 'Total Regions', value: totalResults, accent: '#AE3EC9' },
     ];
 
-    const maxVal = Math.max(...applicationTrends.map(d => d.value), 1);
+    const schoolData = topSchools.slice(0, 8).map(s => ({
+        name: s.schoolName?.length > 16 ? s.schoolName.slice(0, 16) + '...' : s.schoolName,
+        fullName: s.schoolName,
+        students: s.studentCount,
+    }));
 
     return (
         <div style={s.page}>
 
-            {/* TOP ROW */}
-            <div style={s.topRow}>
+            {/* KPI ROW */}
+            <div style={s.kpiStrip}>
+                {kpis.map((k, i) => (
+                    <div key={i} style={{ ...s.kpiCard, borderLeftColor: k.accent }}>
+                        <span style={s.kpiLabel}>{k.label}</span>
+                        <span style={s.kpiValue}>{k.value.toLocaleString()}</span>
+                    </div>
+                ))}
+            </div>
 
-                <div style={s.kpiStrip}>
-                    {kpis.map((k, i) => (
-                        <div key={i} style={{ ...s.kpiCard, borderLeftColor: k.accent }}>
-                            <span style={s.kpiLabel}>{k.label}</span>
-                            <span style={s.kpiValue}>{k.value.toLocaleString()}</span>
-                        </div>
-                    ))}
-                </div>
+            {/* CHARTS ROW 1 */}
+            <div style={s.chartRow}>
 
+                {/* Application Trends - Bar Chart */}
                 <div style={s.card}>
                     <div style={s.cardHeader}>
                         <div>
@@ -59,63 +58,108 @@ export default function ModernAdminDashboard({
                         </div>
                         <span style={s.badge}>7 DAYS</span>
                     </div>
-
-                    {applicationTrends.length === 0 ? (
-                        <EmptyState />
+                    {applicationTrends.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={220}>
+                            <BarChart data={applicationTrends} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F1F7" />
+                                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#8B8FA8' }} axisLine={false} tickLine={false} />
+                                <YAxis tick={{ fontSize: 11, fill: '#8B8FA8' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                                <Tooltip
+                                    contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', fontSize: 12 }}
+                                    cursor={{ fill: 'rgba(67,97,238,0.06)' }}
+                                />
+                                <Bar dataKey="value" fill="#4361EE" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                            </BarChart>
+                        </ResponsiveContainer>
                     ) : (
-                        <div style={s.chartWrap}>
-                            {applicationTrends.map((d, i) => {
-                                const heightPct = (d.value / maxVal) * 100;
-                                const isHov = hoveredBar === i;
-                                return (
-                                    <div key={i} style={s.barCol}>
-                                        <div style={s.barTrack}>
-                                            <div
-                                                style={{
-                                                    ...s.bar,
-                                                    height: `${heightPct}%`,
-                                                    background: isHov ? '#3451D1' : '#4361EE',
-                                                    opacity: isHov ? 1 : 0.82,
-                                                }}
-                                                onMouseEnter={() => setHoveredBar(i)}
-                                                onMouseLeave={() => setHoveredBar(null)}
-                                            />
-                                        </div>
-                                        <span style={s.barLabel}>{d.label}</span>
-                                    </div>
-                                );
-                            })}
+                        <EmptyState />
+                    )}
+                </div>
+
+                {/* Region Distribution - Pie Chart */}
+                <div style={s.card}>
+                    <div style={s.cardHeader}>
+                        <div>
+                            <p style={s.cardTitle}>Students by Region</p>
+                            <p style={s.cardSub}>Distribution across regions</p>
                         </div>
+                        <span style={s.badge}>REGIONS</span>
+                    </div>
+                    {regionData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={220}>
+                            <PieChart>
+                                <Pie
+                                    data={regionData}
+                                    cx="50%"
+                                    cy="45%"
+                                    innerRadius={50}
+                                    outerRadius={80}
+                                    paddingAngle={3}
+                                    dataKey="value"
+                                    nameKey="name"
+                                >
+                                    {regionData.map((_, i) => (
+                                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip
+                                    contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', fontSize: 12 }}
+                                    formatter={(val, name) => [`${val} students`, name]}
+                                />
+                                <Legend
+                                    iconType="circle"
+                                    iconSize={8}
+                                    wrapperStyle={{ fontSize: 11, paddingTop: 10 }}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <EmptyState />
+                    )}
+                </div>
+
+                {/* Top Schools - Horizontal Bar */}
+                <div style={s.card}>
+                    <div style={s.cardHeader}>
+                        <div>
+                            <p style={s.cardTitle}>Top Schools</p>
+                            <p style={s.cardSub}>By student count</p>
+                        </div>
+                        <span style={s.badge}>TOP {schoolData.length}</span>
+                    </div>
+                    {schoolData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={220}>
+                            <BarChart data={schoolData} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F0F1F7" />
+                                <XAxis type="number" tick={{ fontSize: 11, fill: '#8B8FA8' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                                <YAxis
+                                    type="category"
+                                    dataKey="name"
+                                    tick={{ fontSize: 10, fill: '#3D405B' }}
+                                    axisLine={false}
+                                    tickLine={false}
+                                    width={100}
+                                />
+                                <Tooltip
+                                    contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', fontSize: 12 }}
+                                    formatter={(val, name, props) => [`${val} students`, props.payload.fullName]}
+                                    cursor={{ fill: 'rgba(67,97,238,0.06)' }}
+                                />
+                                <Bar dataKey="students" radius={[0, 4, 4, 0]} maxBarSize={20}>
+                                    {schoolData.map((_, i) => (
+                                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <EmptyState />
                     )}
                 </div>
             </div>
 
-            {/* BOTTOM ROW */}
-            <div style={s.midRow}>
-
-                <div style={s.card}>
-                    <div style={s.cardHeader}>
-                        <p style={s.cardTitle}>Region Distribution</p>
-                        <span style={s.badge}>STUDENTS</span>
-                    </div>
-                    {regionData.length === 0 ? (
-                        <EmptyState />
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                            {regionData.map((r, i) => (
-                                <div key={i}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                                        <span style={s.regionName}>{r.name}</span>
-                                        <span style={s.regionPct}>{r.pct}%</span>
-                                    </div>
-                                    <div style={s.trackBar}>
-                                        <div style={{ ...s.fillBar, width: `${r.pct}%` }} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+            {/* BOTTOM ROW - Recent Tables */}
+            <div style={s.bottomRow}>
 
                 <div style={s.card}>
                     <div style={s.cardHeader}>
@@ -168,7 +212,7 @@ export default function ModernAdminDashboard({
     );
 }
 
-function EmptyState({ label = 'No data' }) {
+function EmptyState({ label = 'No data available' }) {
     return (
         <div style={s.empty}>
             <span style={s.emptyText}>{label}</span>
@@ -199,27 +243,20 @@ const s = {
         gap: 14,
         fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     },
-    topRow: {
-        display: 'grid',
-        gridTemplateColumns: '220px 1fr',
-        gap: 14,
-        alignItems: 'stretch',
-    },
     kpiStrip: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 10,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 14,
     },
     kpiCard: {
-        flex: 1,
         background: '#fff',
         borderRadius: 12,
-        padding: '14px 16px',
+        padding: '18px 20px',
         border: '0.5px solid #E8EAF0',
         borderLeft: '3px solid',
         display: 'flex',
         flexDirection: 'column',
-        gap: 4,
+        gap: 6,
     },
     kpiLabel: {
         fontSize: 10,
@@ -229,10 +266,20 @@ const s = {
         color: '#8B8FA8',
     },
     kpiValue: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 700,
         color: '#1A1D2E',
         lineHeight: 1,
+    },
+    chartRow: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: 14,
+    },
+    bottomRow: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: 14,
     },
     card: {
         background: '#fff',
@@ -265,57 +312,6 @@ const s = {
         background: '#EEF3FF',
         color: '#3451D1',
         letterSpacing: '0.04em',
-    },
-    chartWrap: {
-        display: 'flex',
-        alignItems: 'flex-end',
-        gap: 8,
-        height: 90,
-        marginBottom: 8,
-    },
-    barCol: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        height: '100%',
-        gap: 4,
-    },
-    barTrack: {
-        flex: 1,
-        width: '100%',
-        display: 'flex',
-        alignItems: 'flex-end',
-    },
-    bar: {
-        width: '100%',
-        borderRadius: '4px 4px 0 0',
-        cursor: 'pointer',
-        transition: 'background 0.15s, opacity 0.15s',
-        minHeight: 4,
-    },
-    barLabel: {
-        fontSize: 9,
-        color: '#8B8FA8',
-        textAlign: 'center',
-        whiteSpace: 'nowrap',
-    },
-    midRow: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
-        gap: 14,
-    },
-    regionName: { fontSize: 12, color: '#3D405B', fontWeight: 500 },
-    regionPct: { fontSize: 12, fontWeight: 700, color: '#4361EE' },
-    trackBar: {
-        height: 4,
-        borderRadius: 2,
-        background: '#F0F1F7',
-    },
-    fillBar: {
-        height: 4,
-        borderRadius: 2,
-        background: '#4361EE',
     },
     listRow: {
         display: 'flex',

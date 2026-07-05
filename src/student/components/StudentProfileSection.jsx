@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getStudentProfile, createStudentProfileAPI, updateStudentProfile, uploadFiles } from "../../api";
+import { getMyStudentProfile, createStudentProfileAPI, updateMyStudentProfile, uploadFiles } from "../../api";
 import FileImage from "../../common/components/FileImage";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -178,7 +178,7 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
       };
 
       if ((student.hasProfile || profileId) && profileId) {
-        await updateStudentProfile(profileId, payload);
+        await updateMyStudentProfile(payload);
         toast.success("Profile updated!");
       } else {
         const response = await createStudentProfileAPI(student.studentId, payload);
