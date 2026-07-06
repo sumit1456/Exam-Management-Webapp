@@ -83,7 +83,7 @@ const StudentDashboard = () => {
         const examPage = await getExams({ size: 1000 });
         setExams(examPage?.content || []);
       } catch (error) {
-        console.error("Failed to load exams", error);
+        // toast handled by global interceptor
       }
     };
     const loadMasterData = async () => {
@@ -97,7 +97,7 @@ const StudentDashboard = () => {
         setCentres(cData?.content || []);
         setSchools(sData?.content || []);
       } catch (error) {
-        console.error("Failed to load master data", error);
+        // toast handled by global interceptor
       }
     };
     loadExams();
@@ -111,10 +111,9 @@ const StudentDashboard = () => {
       return data;
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        console.log("Profile not found for student, user needs to complete it.");
-      } else {
-        console.error("Failed to fetch profile in dashboard", error);
+        // Profile not found, student needs to create one
       }
+    }
       return null;
     }
   };
@@ -152,7 +151,7 @@ const StudentDashboard = () => {
       const data = await getExamApplications({ studentId: currentUser.studentId, size: 100 });
       setMyApplications(data?.content || []);
     } catch (error) {
-      console.error("Could not fetch applications", error);
+      // toast handled by global interceptor
     } finally {
       setIsLoadingApplications(false);
     }
@@ -192,7 +191,7 @@ const StudentDashboard = () => {
       const data = await getExamResults({ studentId: currentUser.studentId });
       setMyResults(data?.content || []);
     } catch (error) {
-      console.error("Could not fetch results", error);
+      // toast handled by global interceptor
     }
   };
 

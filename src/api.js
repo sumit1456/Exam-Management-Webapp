@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 import { getCookie, removeCookie } from "./utils/cookie";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
@@ -25,14 +26,29 @@ api.interceptors.response.use(
     const isLoginRequest = requestUrl.includes("/auth/login");
     const hasToken = !!getCookie("jwt_token");
 
-    // Only redirect on 401 if user HAS a token (session expired)
-    // Don't redirect if no token (user is on login page, not authenticated yet)
-    if (error.response?.status === 401 && !isLoginRequest && hasToken) {
+    const status = error.response?.status;
+    const message = error.response?.data?.message || error.message;
+
+    if (status === 401 && !isLoginRequest && hasToken) {
+      toast.error("Session expired. Please log in again.");
       removeCookie("jwt_token");
       removeCookie("jwt_role");
       removeCookie("jwt_user");
       window.location.href = "/";
+    } else if (status === 403) {
+      toast.error("You don't have permission for this action.");
+    } else if (status === 404) {
+      toast.error("Resource not found.");
+    } else if (status === 409) {
+      toast.error(message || "A conflict occurred. This may already exist.");
+    } else if (status === 500) {
+      toast.error("Server error. Please try again later.");
+    } else if (!error.response) {
+      toast.error("Network error. Please check your connection.");
+    } else if (status >= 400) {
+      toast.error(message || "Something went wrong. Please try again.");
     }
+
     return Promise.reject(error);
   }
 );
@@ -414,6 +430,11 @@ export const addStudentProfile = async (studentId, profileData) => {
     `/addStudentProfile?studentId=${studentId}`,
     profileData,
   );
+  return response.data;
+};
+
+export const createMyStudentProfile = async (profileData) => {
+  const response = await api.post("/studentProfiles/me", profileData);
   return response.data;
 };
 

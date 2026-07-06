@@ -109,7 +109,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
       onClose();
       onSuccess?.();
     } catch {
-      toast.error("Application Failed");
+      // toast handled by global interceptor
     } finally {
       setSubmitting(false);
     }
