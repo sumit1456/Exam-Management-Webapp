@@ -840,6 +840,7 @@ const AdminDashboard = () => {
           onViewResult={(res) => {
             setActiveTab('results');
           }}
+          onRefresh={handleRefresh}
         />
       )}
       

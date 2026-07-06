@@ -3,6 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
+import { RefreshCw } from 'lucide-react';
 
 const COLORS = ['#4361EE', '#2F9E44', '#F59F00', '#E03131', '#AE3EC9', '#E67700', '#0CA678', '#1971C2'];
 
@@ -17,6 +18,7 @@ export default function ModernAdminDashboard({
     onViewAllResults,
     onReviewApplication,
     onViewResult,
+    onRefresh,
 }) {
     const { totalStudents = 0, totalExams = 0, activeApplications = 0, totalResults = 0 } = stats;
 
@@ -37,13 +39,20 @@ export default function ModernAdminDashboard({
         <div style={s.page}>
 
             {/* KPI ROW */}
-            <div style={s.kpiStrip}>
-                {kpis.map((k, i) => (
-                    <div key={i} style={{ ...s.kpiCard, borderLeftColor: k.accent }}>
-                        <span style={s.kpiLabel}>{k.label}</span>
-                        <span style={s.kpiValue}>{k.value.toLocaleString()}</span>
-                    </div>
-                ))}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={s.kpiStrip}>
+                    {kpis.map((k, i) => (
+                        <div key={i} style={{ ...s.kpiCard, borderLeftColor: k.accent }}>
+                            <span style={s.kpiLabel}>{k.label}</span>
+                            <span style={s.kpiValue}>{k.value.toLocaleString()}</span>
+                        </div>
+                    ))}
+                </div>
+                {onRefresh && (
+                    <button onClick={onRefresh} style={s.refreshBtn} title="Refresh data">
+                        <RefreshCw size={14} /> Refresh
+                    </button>
+                )}
             </div>
 
             {/* CHARTS ROW 1 */}
@@ -365,5 +374,23 @@ const s = {
         border: 'none',
         cursor: 'pointer',
         padding: 0,
+    },
+    refreshBtn: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+        padding: '8px 16px',
+        fontSize: 11,
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        color: '#3D405B',
+        background: '#fff',
+        border: '0.5px solid #E8EAF0',
+        borderRadius: 8,
+        cursor: 'pointer',
+        fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
     },
 };

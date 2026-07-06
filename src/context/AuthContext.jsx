@@ -29,6 +29,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (tokenValue, roleValue, userObj) => {
+    removeCookie("jwt_token");
+    removeCookie("jwt_role");
+    removeCookie("jwt_user");
     setToken(tokenValue);
     setRole(roleValue);
     setUser(userObj);

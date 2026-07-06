@@ -524,9 +524,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, CheckCircle, XCircle, FileText, Printer, Award } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getStudentProfileByStudentIdString, updateExamApplication, getExamApplicationByExactId, getStudents, getSchools } from '../../api';
+import { getStudentProfileByStudentIdString, updateExamApplication, getExamApplicationByExactId, getStudents, getSchools, deleteExamApplication } from '../../api';
 import { getExam as getExamByNo } from '../../api/exam-api';
 import toast from 'react-hot-toast';
+import { Trash2 } from 'lucide-react';
 
 const STATUS_STYLES = {
     APPROVED: { bg: '#EBFBEE', color: '#2F9E44' },
@@ -588,6 +589,9 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
     };
     const principalSigUrl = parseUrl(studentSchool?.principalSignatureUrl);
     const schoolStampUrl = parseUrl(studentSchool?.schoolStampUrl);
+    const profilePhotoUrl = parseUrl(profile?.profilePhotoUrl);
+    const signatureUrl = parseUrl(profile?.signatureUrl);
+    const idProofUrl = parseUrl(profile?.idProofDocumentUrl);
 
     const updateStatusMutation = useMutation({
         mutationFn: ({ id, status, remarks }) => updateExamApplication(id, { ...application, status, remarks }),
@@ -612,6 +616,22 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
     const handlePublishResult = () => {
         if (window.confirm('Mark this application as result published?')) {
             updateStatusMutation.mutate({ id: application.applicationId, status: 'RESULT_PUBLISHED', remarks: 'Marked as result published by admin' });
+        }
+    };
+
+    const deleteMutation = useMutation({
+        mutationFn: () => deleteExamApplication(application.applicationId),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['applications']);
+            toast.success('Application deleted');
+            onBack();
+        },
+        onError: () => toast.error('Failed to delete application'),
+    });
+
+    const handleDelete = () => {
+        if (window.confirm('Are you sure you want to permanently delete this application? This action cannot be undone.')) {
+            deleteMutation.mutate();
         }
     };
 
@@ -655,8 +675,8 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
 
                     {/* Photo box */}
                     <div style={s.photoBox}>
-                        {profile?.profilePhotoUrl
-                            ? <img src={profile.profilePhotoUrl} alt="Passport" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {profilePhotoUrl
+                            ? <img src={profilePhotoUrl} alt="Passport" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             : <span style={{ fontSize: 9, textAlign: 'center', color: '#999', padding: 4 }}>AFFIX PASSPORT PHOTO</span>}
                     </div>
 
@@ -731,8 +751,8 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                     <FormSection title="Candidate Documents Verification" headerStyle={{ background: '#1A1D2E', color: '#fff' }} className="no-print">
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, padding: 14 }}>
                             {[
-                                { label: 'ID Proof', url: profile?.idProofDocumentUrl, isDoc: true },
-                                { label: 'Signature', url: profile?.signatureUrl },
+                                { label: 'ID Proof', url: idProofUrl, isDoc: true },
+                                { label: 'Signature', url: signatureUrl },
                             ].map(({ label, url, isDoc }) => (
                                 <div key={label}>
                                     <span style={s.formLabel}>{label}</span>
@@ -766,7 +786,7 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                         </p>
                         <div style={s.stampRow}>
                             {[
-                                { label: 'Signature of Candidate', url: profile?.signatureUrl },
+                                { label: 'Signature of Candidate', url: signatureUrl },
                                 { label: "Principal's Signature & Stamp", url: principalSigUrl, stamp: schoolStampUrl },
                                 { label: 'Sabha Authorized Stamp', url: examDetails?.controllerSignatureUrl, stamp: examDetails?.boardSealUrl },
                             ].map(({ label, url, stamp }) => (
@@ -807,6 +827,13 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                                     style={{ ...s.actionBtn, background: '#fff', color: '#7048E8', border: '0.5px solid #D0BFFF' }}
                                 >
                                     <Award size={15} /> Mark as Result Published
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={deleteMutation.isPending}
+                                    style={{ ...s.actionBtn, background: '#fff', color: '#E03131', border: '0.5px solid #FFC9C9', marginTop: 4 }}
+                                >
+                                    <Trash2 size={15} /> {deleteMutation.isPending ? 'Deleting…' : 'Delete Application'}
                                 </button>
                             </>
                         ) : (

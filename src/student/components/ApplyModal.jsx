@@ -48,6 +48,7 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
   const optedPapers = papers.map((p) => p.name);
 
   const [profileComplete, setProfileComplete] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -102,12 +103,15 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
     };
 
     try {
+      setSubmitting(true);
       await createExamApplication(applicationPayload);
       toast.success("Application Submitted Successfully");
       onClose();
       onSuccess?.();
     } catch {
       toast.error("Application Failed");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -300,8 +304,8 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
             <button onClick={onClose} className="px-6 py-4 rounded-xl font-bold text-slate-500 bg-slate-50 hover:bg-slate-100 transition-colors">
               Cancel
             </button>
-            <button onClick={handleSubmit} disabled={!profileComplete || !agreed} className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-              Submit Digital Application <ChevronRight size={20} />
+            <button onClick={handleSubmit} disabled={!profileComplete || !agreed || submitting} className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+              {submitting ? 'Submitting…' : <>Submit Digital Application <ChevronRight size={20} /></>}
             </button>
           </div>
         </div>
@@ -617,12 +621,12 @@ const ApplyModal = ({ exam, student, school, onClose, onSuccess }) => {
               </button>
               <button 
                 onClick={handleSubmit} 
-                style={{...s.footerSubmitBtn, opacity: !profileComplete || !agreed ? 0.5 : 1, cursor: !profileComplete || !agreed ? 'not-allowed' : 'pointer'}}
-                disabled={!profileComplete || !agreed}
+                style={{...s.footerSubmitBtn, opacity: !profileComplete || !agreed || submitting ? 0.5 : 1, cursor: !profileComplete || !agreed || submitting ? 'not-allowed' : 'pointer'}}
+                disabled={!profileComplete || !agreed || submitting}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3b6ddb'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4c84ff'}
               >
-                SUBMIT FINAL APPLICATION <ArrowRight size={18} />
+                {submitting ? 'SUBMITTING…' : <>SUBMIT FINAL APPLICATION <ArrowRight size={18} /></>}
               </button>
             </div>
           </div>
