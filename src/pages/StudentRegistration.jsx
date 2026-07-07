@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { UserPlus, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { UserPlus, Eye, EyeOff, CheckCircle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { createStudent, getSchools } from "../api";
 import { useEffect } from "react";
@@ -13,6 +13,7 @@ const StudentRegistration = () => {
   const [schools, setSchools] = useState([]);
 
   const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchSchools = async () => {
@@ -101,6 +102,7 @@ const StudentRegistration = () => {
     }
 
     try {
+      setSubmitting(true);
       // Prepare data for backend (exclude confirmPassword and schoolId from main object)
       const { confirmPassword, schoolId, ...studentData } = formData;
 
@@ -134,11 +136,11 @@ const StudentRegistration = () => {
         if (navigate) navigate("/student");
       }, 2000);
     } catch (error) {
-      console.error("Registration Error:", error);
-      toast.error(
-        error.response?.data?.message ||
-        "Registration failed! Please try again.",
-      );
+      const msg = error.response?.data?.message;
+      if (msg) toast.error(msg);
+      // Network/500/other errors already handled by global interceptor
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -407,13 +409,23 @@ const StudentRegistration = () => {
 
               {/* Submit Button */}
               <motion.button
-                whileHover={{ scale: 1.01, translateY: -2 }}
-                whileTap={{ scale: 0.99 }}
+                whileHover={{ scale: submitting ? 1 : 1.01, translateY: submitting ? 0 : -2 }}
+                whileTap={{ scale: submitting ? 1 : 0.99 }}
                 type="submit"
-                className="w-full bg-[#4c84ff] text-white font-black py-5 rounded-xl hover:shadow-[0_10px_25px_-5px_rgba(76,132,255,0.4)] transition-all duration-300 flex items-center justify-center gap-3 mt-10 uppercase tracking-wider shadow-lg shadow-blue-500/20"
+                disabled={submitting}
+                className="w-full bg-[#4c84ff] text-white font-black py-5 rounded-xl hover:shadow-[0_10px_25px_-5px_rgba(76,132,255,0.4)] transition-all duration-300 flex items-center justify-center gap-3 mt-10 uppercase tracking-wider shadow-lg shadow-blue-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <CheckCircle size={22} />
-                Create Account
+                {submitting ? (
+                  <>
+                    <Loader2 size={22} className="animate-spin" />
+                    Creating Account…
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle size={22} />
+                    Create Account
+                  </>
+                )}
               </motion.button>
             </div>
           </form>

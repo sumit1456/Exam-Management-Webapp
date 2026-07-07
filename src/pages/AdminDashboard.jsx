@@ -98,18 +98,10 @@ const AdminDashboard = () => {
         navigate("/exam-officer");
       }
     } catch (error) {
-      console.error("[Staff Login] Login error occurred:", {
-        message: error.message,
-        status: error.response?.status,
-        data: error.response?.data
-      });
       if (error.response?.status === 401) {
         setLoginError("Invalid username or password. Please check your credentials and try again.");
-      } else if (!error.response) {
-        setLoginError("Cannot reach the server. Please make sure the backend is running.");
-      } else {
-        setLoginError(`Login failed (${error.response?.status || "unknown error"}). Please try again later.`);
       }
+      // Network/500/other errors already handled by global interceptor
     } finally {
       setIsLoggingIn(false);
     }

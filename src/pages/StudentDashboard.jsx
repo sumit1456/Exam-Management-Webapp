@@ -175,10 +175,8 @@ const StudentDashboard = () => {
     } catch (error) {
       if (error.response?.status === 401) {
         toast.error("Invalid email or password. Please try again.");
-      } else {
-        console.error("Login failed", error);
-        toast.error("Something went wrong. Please try again later.");
       }
+      // Network/500/other errors already handled by global interceptor
     } finally {
       setIsLoggingIn(false);
     }
@@ -465,7 +463,7 @@ const StudentDashboard = () => {
           />
         );
       case "exams":
-        return <ExamList exams={exams} openApplyModal={openApplyModal} />;
+        return <ExamList exams={exams} openApplyModal={openApplyModal} myApplications={myApplications} />;
       case "notices":
         return (
           <div className="bg-white p-12 rounded-3xl border border-gray-100 text-center shadow-xl shadow-black/5 animate-in fade-in duration-500">

@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ErrorBoundary from "./common/components/ErrorBoundary";
 import LandingPage from "./pages/LandingPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import ExamOfficerDashboard from "./pages/ExamOfficerDashboard";
@@ -21,21 +22,23 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Toaster position="top-right" />
-        <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/manage/:type/:id" element={<AdminDashboard />} /> { /* We can handle it inside AdminDashboard or as a separate page */}
-            <Route path="/exam-officer" element={<ExamOfficerDashboard />} />
-            <Route path="/student" element={<StudentDashboard />} />
-            <Route path="/student/register" element={<StudentRegistration />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Toaster position="top-right" />
+          <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/manage/:type/:id" element={<AdminDashboard />} />
+              <Route path="/exam-officer" element={<ExamOfficerDashboard />} />
+              <Route path="/student" element={<StudentDashboard />} />
+              <Route path="/student/register" element={<StudentRegistration />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

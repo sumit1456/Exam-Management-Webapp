@@ -19,6 +19,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Prevent duplicate toasts for the same request
+const recentErrors = new Map();
+const TOAST_DEBOUNCE_MS = 1500;
+
+const showErrorOnce = (key, msg) => {
+  const now = Date.now();
+  const last = recentErrors.get(key);
+  if (last && now - last < TOAST_DEBOUNCE_MS) return;
+  recentErrors.set(key, now);
+  toast.error(msg);
+};
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -28,25 +40,29 @@ api.interceptors.response.use(
 
     const status = error.response?.status;
     const message = error.response?.data?.message || error.message;
+    const errorKey = `${status}-${requestUrl}`;
 
     if (status === 401 && !isLoginRequest && hasToken) {
-      toast.error("Session expired. Please log in again.");
+      if (!recentErrors.has(errorKey) || Date.now() - recentErrors.get(errorKey) > 5000) {
+        toast.error("Session expired. Please log in again.");
+        recentErrors.set(errorKey, Date.now());
+      }
       removeCookie("jwt_token");
       removeCookie("jwt_role");
       removeCookie("jwt_user");
       window.location.href = "/";
     } else if (status === 403) {
-      toast.error("You don't have permission for this action.");
+      showErrorOnce(errorKey, "You don't have permission for this action.");
     } else if (status === 404) {
-      toast.error("Resource not found.");
+      showErrorOnce(errorKey, "Resource not found.");
     } else if (status === 409) {
-      toast.error(message || "A conflict occurred. This may already exist.");
+      showErrorOnce(errorKey, message || "A conflict occurred. This may already exist.");
     } else if (status === 500) {
-      toast.error("Server error. Please try again later.");
+      showErrorOnce(errorKey, "Server error. Please try again later.");
     } else if (!error.response) {
-      toast.error("Network error. Please check your connection.");
+      showErrorOnce("network", "Network error. Please check your connection.");
     } else if (status >= 400) {
-      toast.error(message || "Something went wrong. Please try again.");
+      showErrorOnce(errorKey, message || "Something went wrong. Please try again.");
     }
 
     return Promise.reject(error);

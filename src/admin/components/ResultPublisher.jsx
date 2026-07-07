@@ -579,7 +579,8 @@ const ResultPublisher = ({
                 (!filterRegion || region?.regionId?.toString() === filterRegion || school?.regionId?.toString() === filterRegion) &&
                 (!filterCentre || centre?.centreId?.toString() === filterCentre || school?.centreId?.toString() === filterCentre) &&
                 (!filterSchool || school?.schoolId?.toString() === filterSchool) &&
-                (!filterExam || app.examNo?.toString() === filterExam)
+                (!filterExam || app.examNo?.toString() === filterExam) &&
+                app.status !== 'RESULT_PUBLISHED'
             );
         });
     }, [applications, filterRegion, filterCentre, filterSchool, filterExam, students, schools, centres, regions]);
