@@ -3,6 +3,7 @@ import { ArrowLeft, Save, Image as ImageIcon, Loader2, User, MapPin, Info, Uploa
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { getSchool, updateSchool, uploadFiles } from '../../api';
+import FileImage from '../../common/components/FileImage';
 
 const SchoolDetailView = ({ schoolId, onBack }) => {
     const queryClient = useQueryClient();
@@ -263,7 +264,7 @@ function UploadBox({ label, field, formData, setFormData, uploading, handleFileU
             <div style={s.uploadBox}>
                 {url ? (
                     <div style={{ position: 'relative', flexShrink: 0 }}>
-                        <img src={getDisplayUrl(url)} alt={label} style={{ width: 80, height: 44, objectFit: 'contain', borderRadius: 6, border: '0.5px solid #E8EAF0', background: '#fff' }} />
+                        <FileImage src={getDisplayUrl(url)} alt={label} style={{ width: 80, height: 44, objectFit: 'contain', borderRadius: 6, border: '0.5px solid #E8EAF0', background: '#fff' }} />
                         <button type="button" onClick={() => setFormData(p => ({ ...p, [field]: '' }))} style={s.removeBtn}><X size={9} /></button>
                     </div>
                 ) : (

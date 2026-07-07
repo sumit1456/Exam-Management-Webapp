@@ -1071,6 +1071,7 @@ import { useQuery } from '@tanstack/react-query';
 import Pagination from '../../common/components/Pagination';
 import { searchExams as getExams } from '../../api/exam-api';
 import { uploadFiles } from '../../api';
+import FileImage from '../../common/components/FileImage';
 
 const STATUS_STYLES = {
     PUBLISHED: { bg: '#EBFBEE', color: '#2F9E44' },
@@ -1617,7 +1618,7 @@ const UploadField = ({ label, field, examForm, setExamForm, uploading, handleFil
             <div style={s.uploadBox}>
                 {url ? (
                     <div style={{ position: 'relative', flexShrink: 0 }}>
-                        <img src={url} alt={label} style={{ width: type === 'signature' ? 80 : 44, height: 44, objectFit: 'contain', borderRadius: 6, border: '0.5px solid #E8EAF0', background: '#fff' }} />
+                        <FileImage src={url} alt={label} style={{ width: type === 'signature' ? 80 : 44, height: 44, objectFit: 'contain', borderRadius: 6, border: '0.5px solid #E8EAF0', background: '#fff' }} />
                         <button type="button" onClick={() => setExamForm(p => ({ ...p, [field]: '' }))}
                             style={s.removeBtn}><X size={9} /></button>
                     </div>

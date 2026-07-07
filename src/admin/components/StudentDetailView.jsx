@@ -18,6 +18,7 @@ import {
     createStudentProfileAPI,
     uploadFiles
 } from '../../api';
+import FileImage from '../../common/components/FileImage';
 
 const StudentDetailView = ({ studentId, onBack }) => {
     const queryClient = useQueryClient();
@@ -201,7 +202,7 @@ const StudentDetailView = ({ studentId, onBack }) => {
                     <div style={s.profileBrief}>
                         <div style={s.avatarLarge}>
                             {profileData?.profilePhotoUrl ? (
-                                <img src={profileData.profilePhotoUrl} alt="Student" style={s.avatarImg} />
+                                <FileImage src={profileData.profilePhotoUrl} alt="Student" style={s.avatarImg} />
                             ) : (
                                 <span>{formData?.firstName?.charAt(0)}{formData?.lastName?.charAt(0)}</span>
                             )}
@@ -255,7 +256,7 @@ const StudentDetailView = ({ studentId, onBack }) => {
                                             <p style={s.label}>Profile Photograph</p>
                                             <div style={s.imagePreview}>
                                                 {profileData.profilePhotoUrl ? (
-                                                    <img src={profileData.profilePhotoUrl} alt="Photo" style={s.img} />
+                                                    <FileImage src={profileData.profilePhotoUrl} alt="Photo" style={s.img} />
                                                 ) : (
                                                     <div style={s.imgPlaceholder}><Camera size={32} /></div>
                                                 )}
@@ -269,7 +270,7 @@ const StudentDetailView = ({ studentId, onBack }) => {
                                             <p style={s.label}>Signature Specimen</p>
                                             <div style={s.sigPreview}>
                                                 {profileData.signatureUrl ? (
-                                                    <img src={profileData.signatureUrl} alt="Signature" style={s.imgContain} />
+                                                    <FileImage src={profileData.signatureUrl} alt="Signature" style={s.imgContain} />
                                                 ) : (
                                                     <div style={s.imgPlaceholder}><FileText size={32} /></div>
                                                 )}

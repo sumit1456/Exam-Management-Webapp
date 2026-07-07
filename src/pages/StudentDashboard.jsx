@@ -113,7 +113,6 @@ const StudentDashboard = () => {
       if (error.response && error.response.status === 404) {
         // Profile not found, student needs to create one
       }
-    }
       return null;
     }
   };

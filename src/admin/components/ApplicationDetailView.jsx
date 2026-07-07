@@ -528,6 +528,7 @@ import { getStudentProfileByStudentIdString, updateExamApplication, getExamAppli
 import { getExam as getExamByNo } from '../../api/exam-api';
 import toast from 'react-hot-toast';
 import { Trash2 } from 'lucide-react';
+import FileImage from '../../common/components/FileImage';
 
 const STATUS_STYLES = {
     APPROVED: { bg: '#EBFBEE', color: '#2F9E44' },
@@ -666,8 +667,8 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
 
                     {/* Form header */}
                     <div style={s.formHeader}>
-                        {examDetails?.boardSealUrl && <img src={examDetails.boardSealUrl} alt="Seal" style={s.headerImgLeft} />}
-                        {examDetails?.boardLogoUrl && <img src={examDetails.boardLogoUrl} alt="Logo" style={s.headerImgRight} />}
+                        {examDetails?.boardSealUrl && <FileImage src={examDetails.boardSealUrl} alt="Seal" style={s.headerImgLeft} />}
+                        {examDetails?.boardLogoUrl && <FileImage src={examDetails.boardLogoUrl} alt="Logo" style={s.headerImgRight} />}
                         <h1 style={s.formTitle}>Maharashtra Rashtrabhasha Sabha, Pune</h1>
                         <p style={s.formSubtitle}>387, Narayan Peth, Pune – 411 030 | Form No: MRS/2026/A-{application.applicationId}</p>
                         <p style={s.formSubtitle}><strong>EXAMINATION APPLICATION FORM</strong></p>
@@ -676,7 +677,7 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                     {/* Photo box */}
                     <div style={s.photoBox}>
                         {profilePhotoUrl
-                            ? <img src={profilePhotoUrl} alt="Passport" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ? <FileImage src={profilePhotoUrl} alt="Passport" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             : <span style={{ fontSize: 9, textAlign: 'center', color: '#999', padding: 4 }}>AFFIX PASSPORT PHOTO</span>}
                     </div>
 
@@ -760,7 +761,7 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                                         {url
                                             ? isDoc
                                                 ? <a href={url} target="_blank" rel="noreferrer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#4361EE', fontWeight: 700, textDecoration: 'none', fontSize: 11 }}><FileText size={32} />View</a>
-                                                : <img src={url} alt={label} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                                                : <FileImage src={url} alt={label} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                                             : <span style={{ fontSize: 12, color: '#D1D5E8', fontStyle: 'italic' }}>Not uploaded</span>}
                                     </div>
                                 </div>
@@ -791,8 +792,8 @@ const ApplicationDetailView = ({ application: initialApplication, onBack }) => {
                                 { label: 'Sabha Authorized Stamp', url: examDetails?.controllerSignatureUrl, stamp: examDetails?.boardSealUrl },
                             ].map(({ label, url, stamp }) => (
                                 <div key={label} style={s.signBox}>
-                                    {url && <img src={url} alt={label} style={{ maxHeight: 48, objectFit: 'contain' }} />}
-                                    {stamp && <img src={stamp} alt="stamp" style={{ maxHeight: 32, objectFit: 'contain' }} />}
+                                    {url && <FileImage src={url} alt={label} style={{ maxHeight: 48, objectFit: 'contain' }} />}
+                                    {stamp && <FileImage src={stamp} alt="stamp" style={{ maxHeight: 32, objectFit: 'contain' }} />}
                                     <span style={{ fontSize: 11, color: '#4A5568', marginTop: 'auto' }}>{label}</span>
                                 </div>
                             ))}
