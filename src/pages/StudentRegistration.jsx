@@ -145,7 +145,7 @@ const StudentRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9fe] py-12 px-4 md:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#f8f9fe] py-6 sm:py-12 px-3 sm:px-6 md:px-8 relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-500/5 blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[-5%] left-[10%] w-[30%] h-[30%] rounded-full bg-indigo-500/5 blur-[90px] pointer-events-none" />
@@ -157,17 +157,17 @@ const StudentRegistration = () => {
           className="bg-white rounded-2xl shadow-xl overflow-hidden"
         >
           {/* Header */}
-          <div className="bg-[#4c84ff] p-10 text-white relative">
-            <div className="absolute top-0 right-0 p-8 opacity-10">
+          <div className="bg-[#4c84ff] p-6 sm:p-10 text-white relative">
+            <div className="absolute top-0 right-0 p-8 opacity-10 hidden sm:block">
               <UserPlus size={120} />
             </div>
-            <div className="flex items-center gap-6 relative z-10">
-              <div className="h-20 w-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md shadow-inner border border-white/20">
-                <UserPlus size={36} />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 relative z-10">
+              <div className="h-16 w-16 sm:h-20 sm:w-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md shadow-inner border border-white/20 shrink-0">
+                <UserPlus size={30} className="sm:w-9 sm:h-9" />
               </div>
               <div>
-                <h1 className="text-3xl font-black tracking-tight uppercase">Student Registration</h1>
-                <p className="text-blue-50 text-sm mt-1 font-medium opacity-90">
+                <h1 className="text-2xl sm:text-3xl font-black tracking-tight uppercase">Student Registration</h1>
+                <p className="text-blue-50 text-xs sm:text-sm mt-1 font-medium opacity-90">
                   Create your account to get started with the MRB Portal
                 </p>
               </div>
@@ -175,10 +175,10 @@ const StudentRegistration = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="p-8" noValidate>
+          <form onSubmit={handleSubmit} className="p-4 sm:p-8" noValidate>
             <div className="space-y-6">
               {/* Name Fields */}
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-2">
                     First Name <span className="text-red-500">*</span>

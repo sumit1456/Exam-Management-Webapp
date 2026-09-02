@@ -654,7 +654,7 @@ const ResultViewer = ({ isDashboard = false }) => {
                             <p style={s.sectionHdr}><Filter size={11} style={{ color: '#4361EE' }} /> Filter Results</p>
                             {hasFilters && <button onClick={clearFilters} style={s.clearBtn}><XCircle size={11} /> Reset</button>}
                         </div>
-                        <div style={s.filterGrid}>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
                             {[
                                 { label: 'Exam', val: filterExam, onChange: e => { setFilterExam(e.target.value); setPage(0); }, opts: exams.map(ex => ({ v: ex.examNo, l: ex.exam_name })) },
                                 { label: 'Region', val: filterRegion, onChange: e => { setFilterRegion(e.target.value); setFilterCentre(''); setFilterSchool(''); setPage(0); }, opts: regions.map(r => ({ v: r.regionId, l: r.regionName })) },
@@ -676,7 +676,7 @@ const ResultViewer = ({ isDashboard = false }) => {
 
                         {/* Insight ranges */}
                         <div style={{ marginTop: 14, paddingTop: 12, borderTop: '0.5px solid #E8EAF0' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                            <div className="flex flex-wrap items-center gap-2">
                                 <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#8B8FA8' }}>Quick Insights:</span>
                                 {INSIGHT_RANGES.map(r => {
                                     const active = minPercent === r.min && maxPercent === r.max;
@@ -687,7 +687,7 @@ const ResultViewer = ({ isDashboard = false }) => {
                                         </button>
                                     );
                                 })}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
+                                <div className="flex items-center gap-1.5 sm:ml-auto mt-2 sm:mt-0">
                                     <span style={{ fontSize: 10, color: '#8B8FA8', fontWeight: 600 }}>Custom:</span>
                                     <input type="number" placeholder="Min" style={s.rangeInput} value={tempMin} onChange={e => setTempMin(e.target.value)} />
                                     <span style={{ fontSize: 10, color: '#B0B3C6' }}>—</span>

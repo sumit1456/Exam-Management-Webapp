@@ -534,9 +534,11 @@ const ResultPublisher = ({
     setResultForm,
     handlePublishResult,
     applications = [],
+    isLoading = false,
     initialFilters = {},
 }) => {
     const [entryMode, setEntryMode] = useState('bulk');
+    const [savingAppId, setSavingAppId] = useState(null);
     const [filterRegion, setFilterRegion] = useState(initialFilters.region || '');
     const [filterCentre, setFilterCentre] = useState(initialFilters.centre || '');
     const [filterSchool, setFilterSchool] = useState(initialFilters.school || '');
@@ -606,7 +608,7 @@ const ResultPublisher = ({
     const handleBulkMarkChange = (appId, paperName, val) => setBulkData(p => ({ ...p, [appId]: { ...p[appId], marks: { ...(p[appId]?.marks || {}), [paperName]: parseFloat(val) || 0 } } }));
     const handleBulkRemarkChange = (appId, remark) => setBulkData(p => ({ ...p, [appId]: { ...p[appId], remarks: remark } }));
 
-    const saveBulkResult = (appId) => {
+    const saveBulkResult = async (appId) => {
         const app = applications.find(a => a.applicationId === appId);
         const data = bulkData[appId];
         if (!app || !data) return;
@@ -617,12 +619,17 @@ const ResultPublisher = ({
         const totalObtained = Object.values(data.marks || {}).reduce((s, m) => s + m, 0);
         const totalMax = papers.reduce((s, p) => s + (p.maxMarks || 0), 0);
         const percentage = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
-        handlePublishResult(null, {
-            totalMarks: parseFloat(totalMax.toFixed(2)),
-            percentage: parseFloat(percentage.toFixed(2)),
-            resultData: JSON.stringify({ score: `${percentage.toFixed(2)}%`, remarks: data.remarks || 'Pass', totalObtained, totalMax, breakdown: data.marks }),
-            publishedAt: new Date().toISOString(),
-        }, appId);
+        setSavingAppId(appId);
+        try {
+            await handlePublishResult(null, {
+                totalMarks: parseFloat(totalMax.toFixed(2)),
+                percentage: parseFloat(percentage.toFixed(2)),
+                resultData: JSON.stringify({ score: `${percentage.toFixed(2)}%`, remarks: data.remarks || 'Pass', totalObtained, totalMax, breakdown: data.marks }),
+                publishedAt: new Date().toISOString(),
+            }, appId);
+        } finally {
+            setSavingAppId(null);
+        }
     };
 
     const hasFilters = filterRegion || filterCentre || filterSchool || filterExam;
@@ -673,7 +680,7 @@ const ResultPublisher = ({
                 <div style={{ marginBottom: 14 }}>
                     <p style={{ ...s.sectionHdr }}><Search size={11} style={{ color: '#4361EE' }} /> Step 1 — Browse Candidates</p>
                 </div>
-                <div style={s.filterGrid}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
                     {[
                         { label: 'Region', val: filterRegion, onChange: e => { setFilterRegion(e.target.value); setFilterCentre(''); setFilterSchool(''); }, opts: regions.map(r => ({ v: r.regionId, l: r.regionName })) },
                         { label: 'Centre', val: filterCentre, onChange: e => { setFilterCentre(e.target.value); setFilterSchool(''); }, opts: availableCentres.map(c => ({ v: c.centreId, l: c.centreName })) },
@@ -706,8 +713,8 @@ const ResultPublisher = ({
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
                         {/* Candidate confirm + remark */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 14 }}>
-                            <div style={s.card}>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                            <div style={s.card} className="md:col-span-2">
                                 <p style={s.sectionHdr}>Step 2 — Candidate Confirmation</p>
                                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20 }}>
                                     <div>
@@ -739,7 +746,7 @@ const ResultPublisher = ({
                         </div>
 
                         {/* Marks entry */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
 
                             {/* Paper breakdown */}
                             <div style={s.card}>
@@ -792,8 +799,8 @@ const ResultPublisher = ({
                                     <span style={{ fontSize: 10, color: '#B0B3C6', fontWeight: 600 }}>Total Score Percentage</span>
                                 </div>
 
-                                <button type="submit" style={s.publishBtn}>
-                                    <Award size={15} /> Publish Result
+                                <button type="submit" style={{ ...s.publishBtn, ...(isLoading ? { opacity: 0.5, cursor: 'not-allowed' } : {}) }} disabled={isLoading}>
+                                    <Award size={15} /> {isLoading ? 'Publishing…' : 'Publish Result'}
                                 </button>
                             </div>
                         </div>
@@ -849,7 +856,16 @@ const ResultPublisher = ({
                                                     </select>
                                                 </td>
                                                 <td style={{ ...s.td, textAlign: 'right' }}>
-                                                    <button onClick={() => saveBulkResult(app.applicationId)} style={s.saveRowBtn}>Save</button>
+                                                    <button
+                                                        onClick={() => saveBulkResult(app.applicationId)}
+                                                        disabled={savingAppId === app.applicationId || isLoading}
+                                                        style={{
+                                                            ...s.saveRowBtn,
+                                                            ...(savingAppId === app.applicationId || isLoading ? { opacity: 0.5, cursor: 'not-allowed' } : {})
+                                                        }}
+                                                    >
+                                                        {savingAppId === app.applicationId ? 'Saving…' : 'Save'}
+                                                    </button>
                                                 </td>
                                             </tr>
                                         );

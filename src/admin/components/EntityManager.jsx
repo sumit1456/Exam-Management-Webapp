@@ -144,31 +144,31 @@ const EntityManager = () => {
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            {/* Header / Context Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/50 p-4 sm:p-6 rounded-3xl border border-gray-100 backdrop-blur-md">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="p-3 bg-white hover:bg-gray-50 rounded-xl transition-all shadow-sm border border-gray-100 text-[#4c84ff]"
+                        className="p-2.5 sm:p-3 bg-white hover:bg-gray-50 rounded-xl transition-all shadow-sm border border-gray-100 text-[#4c84ff] shrink-0"
                     >
                         <ChevronLeft size={20} />
                     </button>
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-[#4c84ff] text-white flex items-center justify-center shadow-xl shadow-blue-100 border-4 border-white">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#4c84ff] text-white flex items-center justify-center shadow-xl shadow-blue-100 border-2 sm:border-4 border-white shrink-0">
                             {getIcon()}
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-gray-800 leading-tight">{getTitle()}</h2>
-                            <p className="text-[10px] font-black text-[#4c84ff] uppercase tracking-[0.2em]">{type} Record • ID: #{id}</p>
+                            <h2 className="text-xl sm:text-2xl font-black text-gray-800 leading-tight">{getTitle()}</h2>
+                            <p className="text-[9px] sm:text-[10px] font-black text-[#4c84ff] uppercase tracking-[0.2em]">{type} Record • ID: #{id}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-6 py-2.5 bg-white border border-red-100 text-red-500 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-red-50 transition-all">
+                <div className="flex flex-wrap items-center gap-2.5">
+                    <button className="flex items-center gap-2 px-4 sm:px-6 py-2.5 bg-white border border-red-100 text-red-500 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-red-50 transition-all">
                         <Trash2 size={16} /> Delete
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-2.5 bg-[#4c84ff] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-601 transition-all shadow-lg shadow-blue-100">
+                    <button className="flex items-center gap-2 px-4 sm:px-6 py-2.5 bg-[#4c84ff] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-601 transition-all shadow-lg shadow-blue-100">
                         <Save size={16} /> Save Changes
                     </button>
                 </div>
@@ -177,7 +177,7 @@ const EntityManager = () => {
             {/* Content Sidebar + Main Area */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Navigation Tabs */}
-                <div className="space-y-2">
+                <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 custom-scrollbar">
                     {[
                         { id: 'overview', label: 'General Overview', icon: <Activity size={18} /> },
                         { id: 'applications', label: 'Exam Applications', icon: <FileText size={18} /> },
@@ -188,7 +188,7 @@ const EntityManager = () => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveSubTab(tab.id)}
-                            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${activeSubTab === tab.id
+                            className={`flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap shrink-0 lg:shrink lg:w-full ${activeSubTab === tab.id
                                 ? 'bg-[#4c84ff] text-white shadow-xl shadow-blue-100'
                                 : 'bg-white text-gray-400 hover:bg-blue-50 hover:text-[#4c84ff] border border-gray-100/50'
                                 }`}
@@ -202,7 +202,7 @@ const EntityManager = () => {
                 {/* Data Panels */}
                 <div className="lg:col-span-3">
                     {activeSubTab === 'overview' && (
-                        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-8">
+                        <div className="bg-white p-4 sm:p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6 sm:space-y-8">
                             <div className="flex items-center justify-between border-b border-gray-50 pb-6">
                                 <h3 className="text-sm font-black text-gray-800 uppercase tracking-widest flex items-center gap-2">
                                     <FileText size={18} className="text-[#4c84ff]" /> Primary Information

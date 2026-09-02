@@ -221,10 +221,11 @@ const RegionManager = () => {
                         <p style={s.cardSub}>Add and manage administrative regions</p>
                     </div>
                 </div>
-                <form onSubmit={handleAddRegion} style={s.formRow}>
+                <form onSubmit={handleAddRegion} className="flex flex-col sm:flex-row gap-2.5">
                     <input
                         type="text"
                         style={s.input}
+                        className="flex-1"
                         placeholder="Enter Region Name (e.g. Pune, Mumbai)"
                         value={regionName}
                         onChange={(e) => setRegionName(e.target.value)}
@@ -234,6 +235,7 @@ const RegionManager = () => {
                         type="submit"
                         disabled={addRegionMutation.isPending}
                         style={s.btn}
+                        className="w-full sm:w-auto"
                     >
                         {addRegionMutation.isPending
                             ? <RefreshCw size={14} style={{ animation: 'spin 1s linear infinite' }} />

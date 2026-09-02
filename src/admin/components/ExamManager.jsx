@@ -1232,7 +1232,7 @@ const ExamManager = ({
     const clrErr = (key) => errors[key] && setErrors(p => ({ ...p, [key]: '' }));
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, alignItems: 'start', fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3.5 items-start font-sans">
 
             {/* ══════ FORM PANEL ══════ */}
             <div style={s.card}>
@@ -1546,12 +1546,12 @@ const ExamManager = ({
 
             {/* ══════ LIST PANEL ══════ */}
             <div style={s.card}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                     <div>
                         <p style={s.cardTitle}>Existing Exams</p>
                         <p style={s.cardSub}>{examsData?.totalElements || 0} exams total</p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div className="flex items-center gap-2">
                         <div style={s.filterWrap}>
                             <Filter size={11} style={{ color: '#B0B3C6' }} />
                             <input type="text" placeholder="Search..." style={s.filterInput}

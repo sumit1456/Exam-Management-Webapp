@@ -236,9 +236,9 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
             <span style={s.cardTitle}>Identity & Core Details</span>
           </div>
           
-          <div style={s.flexRow}>
+          <div className="flex flex-col-reverse lg:flex-row gap-6 lg:gap-10">
             <div style={s.formArea}>
-              <div style={s.grid2}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div style={s.fieldGroup}>
                   <label style={s.label}>FULL NAME</label>
                   <input
@@ -349,7 +349,7 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
         </div>
 
         {/* Assets Section */}
-        <div style={s.sideBySide}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div style={s.card}>
             <div style={s.cardHeader}>
                 <FileText size={16} color="#4c84ff" />
@@ -385,8 +385,8 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
                 </div>
 
                 <div style={s.fieldGroup}>
-                    <label style={s.label}>ID PROOF DOCUMENT</label>
-                    <div style={s.docStatusBox}>
+                  <label style={s.label}>ID PROOF DOCUMENT</label>
+                  <div style={s.docStatusBox}>
                         {(previews.idProof || formData.idProofDocumentUrl) ? (
                             <div style={s.docDetails}>
                                 <div style={s.docIcon}><FileText size={18} color="#4c84ff" /></div>
@@ -409,7 +409,7 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
                                 )}
                             </div>
                         )}
-                    </div>
+                  </div>
                 </div>
             </div>
           </div>
@@ -419,7 +419,7 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
               <GraduationCap size={16} color="#4c84ff" />
               <span style={s.cardTitle}>Academic Background</span>
             </div>
-            <div style={s.grid2}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div style={s.fieldGroup}>
                     <label style={s.label}>PREVIOUS EXAM</label>
                     <input type="text" name="previousExamName" value={formData.previousExamName} onChange={handleChange} disabled={!isEditing} style={isEditing ? s.input : s.inputDisabled} placeholder="e.g. Higher Secondary" />
@@ -446,8 +446,8 @@ const StudentProfileSection = ({ student, prefetchedProfile, onProfileUpdated })
             <MapPin size={16} color="#4c84ff" />
             <span style={s.cardTitle}>Communication & Residential Address</span>
           </div>
-          <div style={s.grid4}>
-              <div style={{gridColumn: 'span 2'}}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="sm:col-span-2">
                 <div style={s.fieldGroup}>
                     <label style={s.label}>STREET ADDRESS / LINE 1</label>
                     <input type="text" name="addr_line1" value={formData.address.line1} onChange={handleChange} disabled={!isEditing} style={isEditing ? s.input : s.inputDisabled} required />

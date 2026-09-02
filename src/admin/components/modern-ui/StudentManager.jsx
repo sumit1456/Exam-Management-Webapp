@@ -152,7 +152,7 @@ const StudentManager = ({ isDashboard = false }) => {
                 </div>
 
                 {/* Filters */}
-                <div style={s.filterGrid}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 bg-[#FAFBFF] p-3 sm:p-4 rounded-xl border border-[#E8EAF0]">
                     <div style={s.fieldWrap}>
                         <label style={s.label}>Region</label>
                         <select
@@ -199,9 +199,9 @@ const StudentManager = ({ isDashboard = false }) => {
                             <Search size={12} style={{ position: 'absolute', left: 10, top: 12, color: '#B0B3C6' }} />
                         </div>
                     </div>
-                    <div style={{ ...s.fieldWrap, gridColumn: 'span 2' }}>
+                    <div className="flex flex-col gap-1 sm:col-span-2">
                         <label style={s.label}>Search by Name</label>
-                        <div style={{ display: 'flex', gap: 8 }}>
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="text"
                                 style={s.input}

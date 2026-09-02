@@ -13,11 +13,12 @@ import {
     Search,
     UserCog,
     LogOut,
-    Shield
+    Shield,
+    X
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
-const Sidebar = ({ activeTab, setActiveTab }) => {
+const Sidebar = ({ activeTab, setActiveTab, isOpen = false, onClose }) => {
     const { user, role, logout } = useAuth();
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -32,38 +33,60 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         { id: 'results', label: 'View Results', icon: Award },
     ];
 
+    const handleSelectTab = (tabId) => {
+        setActiveTab(tabId);
+        if (onClose) onClose();
+    };
+
     return (
-        <div 
-            className="w-64 text-white min-h-screen flex flex-col fixed left-0 top-0 z-50 overflow-hidden border-r border-white/10"
+        <aside 
+            className={`w-64 text-white h-screen flex flex-col fixed left-0 top-0 z-50 overflow-hidden border-r border-white/10 transition-transform duration-300 ease-in-out ${
+                isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+            }`}
             style={{
                 background: 'linear-gradient(145deg, #090d16 0%, #0d1629 50%, #15223e 100%)',
             }}
         >
-
             {/* Grid overlay */}
             <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '30px 30px', pointerEvents: 'none' }} />
 
             {/* Content Container */}
             <div className="flex-1 flex flex-col relative z-10 h-full">
                 {/* Brand Header */}
-                <div className="h-16 flex items-center px-6 border-b border-white/5 bg-white/5 backdrop-blur-md">
-                    <div style={{
-                        width: 32, height: 32, borderRadius: 8,
-                        background: 'rgba(255,255,255,0.12)',
-                        backdropFilter: 'blur(8px)',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        marginRight: 12
-                    }}>
-                        <Shield size={18} color="#93c5fd" />
+                <div className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-white/5 backdrop-blur-md">
+                    <div className="flex items-center">
+                        <div style={{
+                            width: 32, height: 32, borderRadius: 8,
+                            background: 'rgba(255,255,255,0.12)',
+                            backdropFilter: 'blur(8px)',
+                            border: '1px solid rgba(255,255,255,0.15)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            marginRight: 12
+                        }}>
+                            <Shield size={18} color="#93c5fd" />
+                        </div>
+                        <span className="font-bold text-base tracking-wide text-white/95">MRB Admin</span>
                     </div>
-                    <span className="font-bold text-base tracking-wide text-white/95">MRB Admin</span>
+
+                    {/* Mobile Close Button */}
+                    {onClose && (
+                        <button 
+                            onClick={onClose}
+                            className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                            aria-label="Close menu"
+                        >
+                            <X size={18} />
+                        </button>
+                    )}
                 </div>
 
                 {/* Search Hint */}
-                <div className="px-4 mt-6">
+                <div className="px-4 mt-5">
                     <button
-                        onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}
+                        onClick={() => {
+                            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+                            if (onClose) onClose();
+                        }}
                         className="w-full flex items-center gap-3 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-gray-300 text-sm hover:bg-white/10 transition-all duration-200 group"
                     >
                         <Search size={15} className="group-hover:text-white transition-colors" />
@@ -73,11 +96,11 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 mt-5 px-4 space-y-1.5 overflow-y-auto custom-scrollbar pb-6">
+                <nav className="flex-1 mt-4 px-4 space-y-1 overflow-y-auto custom-scrollbar pb-6">
                     {menuItems.map((item) => (
                         <div key={item.id}>
                             <button
-                                onClick={() => setActiveTab(item.id)}
+                                onClick={() => handleSelectTab(item.id)}
                                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 group border ${
                                     activeTab === item.id
                                         ? 'bg-blue-600/15 text-blue-400 border-blue-500/20'
@@ -126,7 +149,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
     );
 };
 

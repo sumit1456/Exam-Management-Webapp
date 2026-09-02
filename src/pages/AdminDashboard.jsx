@@ -425,6 +425,7 @@ const AdminDashboard = () => {
         examPapers: [],
       });
       queryClient.invalidateQueries({ queryKey: ["results"] });
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
     onError: () => toast.error("Failed to publish result"),
   });
@@ -614,22 +615,21 @@ const AdminDashboard = () => {
   // If not logged in, show staff login form
   if (!user || (role !== "ADMIN" && role !== "EXAM_OFFICER")) {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div className="flex flex-col lg:flex-row min-h-screen font-sans bg-[#f8fafc] overflow-x-hidden">
 
         {/* ── Left visual panel ── */}
-        <div style={{
-          flex: '0 0 44%', position: 'relative', overflow: 'hidden',
-          background: 'linear-gradient(145deg,#090d16 0%,#0d1629 45%,#15223e 100%)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '56px 48px',
-        }}>
+        <div 
+          className="w-full lg:w-[44%] relative overflow-hidden flex flex-col justify-center p-6 sm:p-10 lg:p-12 shrink-0"
+          style={{
+            background: 'linear-gradient(145deg,#090d16 0%,#0d1629 45%,#15223e 100%)',
+          }}
+        >
           {/* Grid */}
           <div style={{ position:'absolute',inset:0, backgroundImage:'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)', backgroundSize:'40px 40px', pointerEvents:'none' }} />
 
-
-
           <div style={{ position:'relative', zIndex:1 }}>
             {/* Logo */}
-            <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:52 }}>
+            <div className="flex items-center gap-3 mb-6 sm:mb-10 lg:mb-12">
               <div style={{ width:40,height:40,borderRadius:10,background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.15)',display:'flex',alignItems:'center',justifyContent:'center' }}>
                 <ShieldCheck size={20} color="#93c5fd" />
               </div>
@@ -637,12 +637,12 @@ const AdminDashboard = () => {
             </div>
 
             <p style={{ fontSize:11,fontWeight:700,color:'#93c5fd',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10 }}>Secure Administration Access</p>
-            <h1 style={{ fontSize:38,fontWeight:900,color:'#fff',lineHeight:1.15,margin:'0 0 16px',letterSpacing:'-0.02em' }}>
+            <h1 className="text-3xl sm:text-4xl font-black text-white leading-tight mb-4 tracking-tight">
               Staff &amp;<br />
               <span style={{ color:'#60a5fa' }}>Officer</span><br />
               Portal
             </h1>
-            <p style={{ fontSize:13,color:'rgba(255,255,255,0.5)',lineHeight:1.7,maxWidth:320,margin:'0 0 36px' }}>
+            <p className="text-xs sm:text-sm text-white/50 leading-relaxed max-w-sm mb-6 sm:mb-8">
               Manage exams, students, applications, results and examination centres from one unified dashboard.
             </p>
 
@@ -657,7 +657,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* ── Right form panel ── */}
-        <div style={{ flex:1,background:'#f8fafc',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 32px',overflowY:'auto' }}>
+        <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 lg:p-12 overflow-y-auto bg-[#f8fafc]">
           <div style={{ width:'100%',maxWidth:400 }}>
 
             {/* Header */}

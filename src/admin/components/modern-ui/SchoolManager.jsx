@@ -82,7 +82,7 @@ const SchoolManager = () => {
                         <p style={s.cardSub}>Register new schools and assign them to exam centres</p>
                     </div>
                 </div>
-                <form onSubmit={handleCreateSchool} style={s.formGrid}>
+                <form onSubmit={handleCreateSchool} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     <div style={s.fieldWrap}>
                         <label style={s.label}>School Name</label>
                         <input
@@ -110,8 +110,8 @@ const SchoolManager = () => {
                             ))}
                         </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                        <button type="submit" disabled={addSchoolMutation.isPending} style={s.btn}>
+                    <div className="flex items-end">
+                        <button type="submit" disabled={addSchoolMutation.isPending} style={s.btn} className="w-full sm:w-auto">
                             {addSchoolMutation.isPending 
                                 ? <RefreshCw size={14} style={{ animation: 'spin 1s linear infinite' }} /> 
                                 : <Plus size={14} />}
@@ -123,12 +123,12 @@ const SchoolManager = () => {
 
             {/* School List */}
             <div style={s.card}>
-                <div style={s.cardHeader}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                     <div>
                         <p style={s.cardTitle}>Existing Schools</p>
                         <p style={s.cardSub}>{schoolsData?.totalElements || 0} schools registered</p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div className="flex flex-wrap items-center gap-2">
                         <div style={s.filterWrap}>
                             <span style={s.filterLabel}>Region</span>
                             <select

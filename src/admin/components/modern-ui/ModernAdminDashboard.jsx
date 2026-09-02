@@ -39,8 +39,8 @@ export default function ModernAdminDashboard({
         <div style={s.page}>
 
             {/* KPI ROW */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={s.kpiStrip}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 flex-1">
                     {kpis.map((k, i) => (
                         <div key={i} style={{ ...s.kpiCard, borderLeftColor: k.accent }}>
                             <span style={s.kpiLabel}>{k.label}</span>
@@ -49,14 +49,14 @@ export default function ModernAdminDashboard({
                     ))}
                 </div>
                 {onRefresh && (
-                    <button onClick={onRefresh} style={s.refreshBtn} title="Refresh data">
+                    <button onClick={onRefresh} style={s.refreshBtn} className="self-end sm:self-center" title="Refresh data">
                         <RefreshCw size={14} /> Refresh
                     </button>
                 )}
             </div>
 
             {/* CHARTS ROW 1 */}
-            <div style={s.chartRow}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
 
                 {/* Application Trends - Bar Chart */}
                 <div style={s.card}>
@@ -168,7 +168,7 @@ export default function ModernAdminDashboard({
             </div>
 
             {/* BOTTOM ROW - Recent Tables */}
-            <div style={s.bottomRow}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
 
                 <div style={s.card}>
                     <div style={s.cardHeader}>

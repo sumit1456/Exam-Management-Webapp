@@ -295,7 +295,7 @@ const ExamCentreManager = () => {
                         <p style={s.cardSub}>Register new exam centres and assign them to regions</p>
                     </div>
                 </div>
-                <form onSubmit={handleAddCentre} style={s.formGrid}>
+                <form onSubmit={handleAddCentre} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     <div style={s.fieldWrap}>
                         <label style={s.label}>Centre Code</label>
                         <input
@@ -332,8 +332,8 @@ const ExamCentreManager = () => {
                             ))}
                         </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                        <button type="submit" disabled={addCentreMutation.isPending} style={s.btn}>
+                    <div className="flex items-end">
+                        <button type="submit" disabled={addCentreMutation.isPending} style={s.btn} className="w-full sm:w-auto">
                             {addCentreMutation.isPending
                                 ? <RefreshCw size={14} style={{ animation: 'spin 1s linear infinite' }} />
                                 : <Plus size={14} />}
@@ -345,12 +345,12 @@ const ExamCentreManager = () => {
 
             {/* Centre List */}
             <div style={s.card}>
-                <div style={s.cardHeader}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                     <div>
                         <p style={s.cardTitle}>Existing Exam Centres</p>
                         <p style={s.cardSub}>{centresData?.totalElements || 0} centres total</p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div className="flex flex-wrap items-center gap-2">
                         <div style={s.filterWrap}>
                             <span style={s.filterLabel}>Region</span>
                             <select

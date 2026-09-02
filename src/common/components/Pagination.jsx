@@ -32,12 +32,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className = "" }) =
     };
 
     return (
-        <div className={`flex items-center justify-between border-t border-gray-100 pt-6 mt-8 ${className}`}>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+        <div className={`flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-100 pt-4 sm:pt-6 mt-6 sm:mt-8 ${className}`}>
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center sm:text-left">
                 Page {currentPage + 1} of {totalPages}
             </span>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-wrap justify-center">
                 <button
                     disabled={currentPage === 0}
                     onClick={() => onPageChange(0)}

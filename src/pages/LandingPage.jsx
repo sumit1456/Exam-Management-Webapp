@@ -17,9 +17,12 @@ const LandingPage = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
-    <div style={s.root}>
+    <div className="flex flex-col lg:flex-row min-h-screen font-sans bg-[#f8fafc] overflow-x-hidden">
       {/* ── Left panel ── */}
-      <div style={{ ...s.left, background: 'linear-gradient(145deg, #090d16 0%, #0d1629 50%, #15223e 100%)' }}>
+      <div 
+        className="w-full lg:w-[46%] relative overflow-hidden flex flex-col justify-center p-6 sm:p-10 lg:p-14 shrink-0"
+        style={{ background: 'linear-gradient(145deg, #090d16 0%, #0d1629 50%, #15223e 100%)' }}
+      >
         {/* Grid overlay */}
         <div style={s.grid} />
 
@@ -30,7 +33,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            style={s.logoRow}
+            className="flex items-center gap-3 mb-6 sm:mb-10 lg:mb-12"
           >
             <div style={s.logoIcon}>
               <BookOpen size={22} color="#fff" />
@@ -45,12 +48,12 @@ const LandingPage = () => {
             transition={{ duration: 0.6, delay: 0.15 }}
           >
             <p style={s.eyebrow}>Maharashtra Rajya Pariksha Mandal</p>
-            <h1 style={s.headline}>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4 tracking-tight">
               Unified <br />
-              <span style={s.headlineAccent}>Examination</span><br />
+              <span className="text-[#60a5fa]">Examination</span><br />
               Management
             </h1>
-            <p style={s.sub}>
+            <p className="text-xs sm:text-sm text-white/60 leading-relaxed max-w-sm m-0">
               A centralised platform for conducting, managing, and publishing
               results for state-level Hindi examinations.
             </p>
@@ -61,11 +64,11 @@ const LandingPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            style={s.featureList}
+            className="list-none p-0 my-6 sm:my-8 flex flex-col gap-2.5"
           >
             {FEATURES.map(f => (
-              <li key={f} style={s.featureItem}>
-                <CheckCircle size={14} style={{ color: '#93c5fd', flexShrink: 0 }} />
+              <li key={f} className="flex items-center gap-2.5 text-xs sm:text-sm text-white/70 font-medium">
+                <CheckCircle size={14} className="text-[#93c5fd] shrink-0" />
                 <span>{f}</span>
               </li>
             ))}
@@ -74,7 +77,7 @@ const LandingPage = () => {
       </div>
 
       {/* ── Right panel ── */}
-      <div style={s.right}>
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 lg:p-12 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}

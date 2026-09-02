@@ -11,6 +11,9 @@ import {
   CheckCircle,
   Clock,
   TrendingUp,
+  Menu,
+  LogOut,
+  Shield,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -69,33 +72,33 @@ const ExamOfficerOverview = ({ stats, onNavigate }) => {
   return (
     <div>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-[#1b223c] tracking-tight">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-black text-[#1b223c] tracking-tight">
           Exam Officer Dashboard
         </h1>
-        <p className="text-gray-400 mt-1 text-sm">
+        <p className="text-gray-400 mt-1 text-xs sm:text-sm">
           Manage applications, publish results, and view exam data.
         </p>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8 sm:mb-10">
         {cards.map((card) => (
           <button
             key={card.tab}
             onClick={() => onNavigate(card.tab)}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-left hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
+            className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-gray-100 text-left hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
           >
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4"
               style={{ backgroundColor: card.bg }}
             >
               <card.icon size={22} style={{ color: card.color }} />
             </div>
-            <p className="text-2xl font-black text-[#1b223c]">
+            <p className="text-xl sm:text-2xl font-black text-[#1b223c]">
               {card.value.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-400 mt-1 font-medium uppercase tracking-wider">
+            <p className="text-[11px] sm:text-xs text-gray-400 mt-1 font-medium uppercase tracking-wider">
               {card.label}
             </p>
           </button>
@@ -103,8 +106,8 @@ const ExamOfficerOverview = ({ stats, onNavigate }) => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-[#1b223c] mb-5 flex items-center gap-2">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-gray-100">
+        <h2 className="text-base font-bold text-[#1b223c] mb-4 sm:mb-5 flex items-center gap-2">
           <TrendingUp size={18} className="text-emerald-500" />
           Quick Actions
         </h2>
@@ -221,8 +224,9 @@ const ExamOfficerExamsView = () => {
 const ExamOfficerDashboard = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { user, role } = useAuth();
+  const { user, role, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedAppForReview, setSelectedAppForReview] = useState(null);
   const [activeFilters, setActiveFilters] = useState({
     region: "",
@@ -339,6 +343,7 @@ const ExamOfficerDashboard = () => {
         hasProject: false,
       });
       queryClient.invalidateQueries({ queryKey: ["results"] });
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
     onError: () => toast.error("Failed to publish result"),
   });
@@ -436,15 +441,61 @@ const ExamOfficerDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9fe] relative overflow-hidden">
+    <div className="min-h-screen bg-[#f8f9fe] relative overflow-x-hidden">
       {/* Decorative blobs */}
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[20%] w-[30%] h-[30%] rounded-full bg-blue-500/5 blur-[100px] pointer-events-none" />
 
-      <ExamOfficerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      {/* Mobile Drawer Backdrop Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 lg:hidden transition-opacity duration-300"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-      <div className="pl-64 flex flex-col min-h-screen relative z-10">
-        <main className="p-8 pt-6 flex-1">
+      <ExamOfficerSidebar 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        isOpen={mobileMenuOpen} 
+        onClose={() => setMobileMenuOpen(false)} 
+      />
+
+      <div className="lg:pl-64 flex flex-col min-h-screen transition-all duration-300 relative z-10">
+        {/* Mobile Header Bar (visible on < lg) */}
+        <header className="lg:hidden bg-[#090d16] text-white px-4 py-3 flex items-center justify-between border-b border-white/10 sticky top-0 z-30 shadow-md">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/15 text-white transition-colors"
+              aria-label="Open navigation menu"
+            >
+              <Menu size={20} />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                <ClipboardList size={15} className="text-emerald-400" />
+              </div>
+              <span className="font-black text-sm tracking-wide text-white">MRB Staff</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-gray-300 uppercase">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="truncate max-w-[80px]">{user?.username || 'Officer'}</span>
+            </div>
+            <button
+              onClick={() => { logout(); navigate('/'); }}
+              className="p-1.5 text-gray-400 hover:text-red-400 rounded-lg hover:bg-white/5 transition-colors"
+              title="Logout"
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
+        </header>
+
+        <main className="p-4 sm:p-6 lg:p-8 pt-4 sm:pt-6 flex-1">
 
           {/* Overview */}
           {activeTab === "overview" && (

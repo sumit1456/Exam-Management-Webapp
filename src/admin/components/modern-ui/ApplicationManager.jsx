@@ -145,12 +145,12 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
         <div style={s.page}>
             {/* Header Card */}
             <div style={s.card}>
-                <div style={s.cardHeader}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                     <div>
                         <p style={s.cardTitle}>Exam Applications</p>
                         <p style={s.cardSub}>Process, review, and manage all student applications</p>
                     </div>
-                    <div style={{ display: 'flex', gap: 10 }}>
+                    <div className="flex flex-wrap items-center gap-2">
                         <div style={s.viewToggle}>
                             <button onClick={() => setViewMode("table")} style={{ ...s.toggleBtn, ...(viewMode === 'table' ? s.toggleActive : {}) }}>
                                 <List size={14} />
@@ -177,7 +177,7 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
                 </div>
 
                 {/* Filters */}
-                <div style={s.filterGrid}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 bg-[#FAFBFF] p-3 sm:p-4 rounded-xl border border-[#E8EAF0]">
                     <div style={s.fieldWrap}>
                         <label style={s.label}>Exam</label>
                         <select style={s.select} value={filterExam} onChange={(e) => { setFilterExam(e.target.value); setPage(0); }}>
@@ -213,7 +213,7 @@ const ApplicationManager = ({ isDashboard = false, onPublishWithFilters, selectA
                             <option value="SUBMITTED">SUBMITTED</option>
                             <option value="APPROVED">APPROVED</option>
                             <option value="REJECTED">REJECTED</option>
-                            <option value="PENDING">PENDING</option>
+                            <option value="HALL_TICKET_GENERATED">HALL TICKET GENERATED</option>
                             <option value="RESULT_PUBLISHED">RESULT PUBLISHED</option>
                         </select>
                     </div>
