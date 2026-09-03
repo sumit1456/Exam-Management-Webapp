@@ -48,7 +48,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::127348475050:role/ec2-ssm-role
-          aws-region: ap-south-1
+          aws-region: ap-southeast-2
 
       - name: Deploy to EC2 via SSM
         run: |
